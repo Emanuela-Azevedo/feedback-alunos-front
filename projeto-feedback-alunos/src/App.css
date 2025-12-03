@@ -106,7 +106,7 @@ body::before {
   75% { transform: rotate(5deg) scale(1.05); }
 }
 
-h1 {
+h1, .login-container h2 {
   font-size: 2.8rem;
   font-weight: 800;
   background: linear-gradient(45deg, #00a859, #007a44, #28a745);
@@ -120,6 +120,10 @@ h1 {
   width: 100%;
   line-height: 1.2;
   animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+.login-container h2 {
+  font-size: 2.2rem;
 }
 
 @keyframes textGlow {
@@ -160,19 +164,6 @@ h1 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.form-group label::before {
-  content: '';
-  font-size: 1rem;
-}
-
-.form-group.password label::before {
-  content: '';
-}
-
-.form-group.password-confirm label::before {
-  content: '';
 }
 
 .form-group input,
@@ -262,11 +253,6 @@ h1 {
   position: relative;
 }
 
-.forgot-password-button::before {
-  content: '';
-  margin-right: 0;
-}
-
 .forgot-password-button:hover {
   color: #28a745;
   background: rgba(0, 168, 89, 0.1);
@@ -292,11 +278,6 @@ h1 {
   overflow: hidden;
 }
 
-.cadastro-button::before {
-  content: '';
-  margin-right: 0;
-}
-
 .cadastro-button:hover {
   background: linear-gradient(45deg, #00a859, #28a745);
   color: white;
@@ -305,8 +286,6 @@ h1 {
 }
 
 .form-select {
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(45deg, #00a859, #28a745) border-box;
   appearance: none;
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2300a859' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -332,13 +311,6 @@ h1 {
   color: #dc3545;
   font-size: 0.8rem;
   margin-top: 0.3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.error-message::before {
-  content: '';
 }
 
 /* Loading state */
@@ -529,7 +501,6 @@ h1 {
   color: #28a745;
 }
 
-/* Efeitos especiais */
 * {
   box-sizing: border-box;
 }
@@ -537,15 +508,4 @@ h1 {
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #f8fff9 inset !important;
   -webkit-text-fill-color: #000000 !important;
-}
-
-/* Cursor personalizado */
-.login-container input,
-.login-container select,
-.login-container button {
-  cursor: text;
-}
-
-.login-container button {
-  cursor: pointer;
 }

@@ -1,13 +1,21 @@
 import { useState } from 'react'
 import './App.css'
 import logoIfpb from './assets/logo-ifpb.png'
+import HomeAluno from './HomeAluno'
+import HomeProfessor from './HomeProfessor'
+import HomeAdmin from './HomeAdmin'
 
 function App() {
   const [matricula, setMatricula] = useState('')
   const [senha, setSenha] = useState('')
   const [showCadastro, setShowCadastro] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userType, setUserType] = useState(null)
+  const [userData, setUserData] = useState(null)
   
   const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
   const [curso, setCurso] = useState('')
   const [especialidade, setEspecialidade] = useState('')
   const [perfil, setPerfil] = useState('aluno')
@@ -15,22 +23,44 @@ function App() {
   const [matriculaError, setMatriculaError] = useState('')
   const [nomeError, setNomeError] = useState('')
   const [cursoError, setCursoError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
 
   const handleLogin = (e) => {
     e.preventDefault()
     
-    const usuarioExiste = false
+    // Simulação de usuários para teste
+    const usuarios = {
+      '202315020035': { tipo: 'aluno', nome: 'João Silva', senha: 'Aluno123!' },
+      '202015030025': { tipo: 'professor', nome: 'Prof. Maria Santos', senha: 'Prof123!' },
+      '999999999999': { tipo: 'admin', nome: 'Administrador', senha: 'Admin123!' }
+    }
     
-    if (!usuarioExiste) {
+    const usuario = usuarios[matricula]
+    
+    if (!usuario) {
       alert('Usuário não encontrado. Redirecionando para cadastro...')
       setShowCadastro(true)
+    } else if (usuario.senha !== senha) {
+      alert('Senha incorreta!')
     } else {
-      console.log('Login:', { matricula, senha })
+      setUserData(usuario)
+      setUserType(usuario.tipo)
+      setIsLoggedIn(true)
     }
   }
 
   const handleForgotPassword = () => {
-    console.log('Esqueci a senha clicado')
+    setShowForgotPassword(true)
+  }
+
+  const handleForgotPasswordSubmit = (e) => {
+    e.preventDefault()
+    console.log('Email para recuperação:', forgotEmail)
+    alert('Email de recuperação enviado!')
+    setForgotEmail('')
+    setShowForgotPassword(false)
   }
 
   const handleCadastro = () => {
@@ -39,6 +69,15 @@ function App() {
 
   const voltarLogin = () => {
     setShowCadastro(false)
+    setShowForgotPassword(false)
+  }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    setUserType(null)
+    setUserData(null)
+    setMatricula('')
+    setSenha('')
   }
 
   // Validações
@@ -60,8 +99,13 @@ function App() {
     return nome.trim().split(' ').length >= 2; // Nome e sobrenome
   };
 
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const limparFormulario = () => {
     setNome('');
+    setEmail('');
     setMatricula('');
     setSenha('');
     setCurso('');
@@ -71,6 +115,8 @@ function App() {
     setMatriculaError('');
     setNomeError('');
     setCursoError('');
+    setEmailError('');
+    setShowPasswordRequirements(false);
   };
 
   const handleSenhaChange = (e) => {
@@ -81,6 +127,17 @@ function App() {
       setSenhaError('A senha deve ter: 6+ caracteres, maiúscula, minúscula, número e especial (@#$%^&*!)');
     } else {
       setSenhaError('');
+    }
+  };
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    
+    if (newEmail.length > 0 && !validateEmail(newEmail)) {
+      setEmailError('Digite um email válido');
+    } else {
+      setEmailError('');
     }
   };
 
@@ -140,6 +197,11 @@ function App() {
       hasErrors = true;
     }
     
+    if (!validateEmail(email)) {
+      setEmailError('Digite um email válido');
+      hasErrors = true;
+    }
+    
     if (!validateMatricula(matricula)) {
       setMatriculaError('Matrícula deve ter 12 dígitos (ex: 202315020035)');
       hasErrors = true;
@@ -159,6 +221,7 @@ function App() {
     
     const dadosCadastro = {
       nome,
+      email,
       matricula,
       senha,
       curso,
@@ -175,6 +238,48 @@ function App() {
     setTimeout(() => {
       setShowCadastro(false);
     }, 1000);
+  }
+
+  // Renderizar tela baseada no tipo de usuário logado
+  if (isLoggedIn) {
+    switch (userType) {
+      case 'aluno':
+        return <HomeAluno userData={userData} onLogout={handleLogout} />
+      case 'professor':
+        return <HomeProfessor userData={userData} onLogout={handleLogout} />
+      case 'admin':
+        return <HomeAdmin userData={userData} onLogout={handleLogout} />
+      default:
+        return null
+    }
+  }
+
+  if (showForgotPassword) {
+    return (
+      <div className="login-container">
+        <img src={logoIfpb} alt="Logo IFPB" className="logo" />
+        <h1 style={{textAlign: 'center'}}>Recuperar Senha</h1>
+        <form onSubmit={handleForgotPasswordSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="forgotEmail">Email:</label>
+            <input 
+              type="email" 
+              id="forgotEmail" 
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Digite seu email"
+              required 
+            />
+            <button type="submit" className="login-button" style={{marginTop: '1rem', fontSize: '0.9rem', padding: '1rem'}}>
+              Enviar Email de Recuperação
+            </button>
+          </div>
+        </form>
+        <button onClick={voltarLogin} className="forgot-password-button">
+          Voltar ao Login
+        </button>
+      </div>
+    )
   }
 
   if (showCadastro) {
@@ -196,6 +301,18 @@ function App() {
             />
             {nomeError && <div className="error-message">{nomeError}</div>}
           </div>
+          <div className={`form-group ${emailError ? 'error' : ''}`}>
+            <label htmlFor="email">Email:</label>
+            <input 
+              type="email" 
+              id="email" 
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Digite seu email"
+              required 
+            />
+            {emailError && <div className="error-message">{emailError}</div>}
+          </div>
           <div className={`form-group ${matriculaError ? 'error' : ''}`}>
             <label htmlFor="matricula">Matrícula:</label>
             <input 
@@ -216,17 +333,21 @@ function App() {
               id="senha" 
               value={senha}
               onChange={handleSenhaChange}
+              onFocus={() => setShowPasswordRequirements(true)}
+              onBlur={() => setShowPasswordRequirements(false)}
               required 
             />
             {senhaError && <div className="error-message">{senhaError}</div>}
-            <div className="password-requirements">
-              <h4>Requisitos da senha:</h4>
-              <div className="requirement">• Mínimo 6 caracteres</div>
-              <div className="requirement">• Uma letra minúscula (a-z)</div>
-              <div className="requirement">• Uma letra maiúscula (A-Z)</div>
-              <div className="requirement">• Um número (0-9)</div>
-              <div className="requirement">• Um caractere especial (@#$%^&*!)</div>
-            </div>
+            {showPasswordRequirements && (
+              <div className="password-requirements">
+                <h4>Requisitos da senha:</h4>
+                <div className="requirement">• Mínimo 6 caracteres</div>
+                <div className="requirement">• Uma letra minúscula (a-z)</div>
+                <div className="requirement">• Uma letra maiúscula (A-Z)</div>
+                <div className="requirement">• Um número (0-9)</div>
+                <div className="requirement">• Um caractere especial (@#$%^&*!)</div>
+              </div>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="perfil">Perfil:</label>
