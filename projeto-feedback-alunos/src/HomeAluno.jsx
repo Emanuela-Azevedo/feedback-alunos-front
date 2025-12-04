@@ -51,8 +51,24 @@ export default function HomeAluno({ userData, onLogout }) {
     <div className="login-container">
       {!showAvaliacaoForm && !showMinhasAvaliacoes && (
         <>
-          <img src={logoIfpb} alt="Logo IFPB" className="logo" />
-          <h2>Portal do Aluno - {userData.nome}</h2>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: '1rem'}}>
+            <img src={logoIfpb} alt="Logo IFPB" className="logo" style={{margin: 0}} />
+            <button 
+              onClick={onLogout}
+              style={{
+                background: '#dc3545',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '0.9rem'
+              }}
+            >
+              Sair
+            </button>
+          </div>
+          <h2 style={{textAlign: 'center'}}>Portal do Aluno - {userData.nome}</h2>
         </>
       )}
 
@@ -201,11 +217,7 @@ export default function HomeAluno({ userData, onLogout }) {
         )}
       </main>
       
-      {!showAvaliacaoForm && !showMinhasAvaliacoes && (
-        <div className="back-link" style={{marginTop: '30px'}}>
-          <a href="#" onClick={(e) => { e.preventDefault(); onLogout(); }}>Sair</a>
-        </div>
-      )}
+
     </div>
   );
 }

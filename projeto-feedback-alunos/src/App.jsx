@@ -9,7 +9,7 @@ function App() {
   const [matricula, setMatricula] = useState('')
   const [senha, setSenha] = useState('')
   const [showCadastro, setShowCadastro] = useState(false)
-  const [showForgotPassword, setShowForgotPassword] = useState(false)
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userType, setUserType] = useState(null)
   const [userData, setUserData] = useState(null)
@@ -25,12 +25,12 @@ function App() {
   const [cursoError, setCursoError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
-  const [forgotEmail, setForgotEmail] = useState('')
+
 
   const handleLogin = (e) => {
     e.preventDefault()
     
-    // Simulação de usuários para teste
+    // Usuários para teste
     const usuarios = {
       '202315020035': { tipo: 'aluno', nome: 'João Silva', senha: 'Aluno123!' },
       '202015030025': { tipo: 'professor', nome: 'Prof. Maria Santos', senha: 'Prof123!' },
@@ -40,8 +40,7 @@ function App() {
     const usuario = usuarios[matricula]
     
     if (!usuario) {
-      alert('Usuário não encontrado. Redirecionando para cadastro...')
-      setShowCadastro(true)
+      alert('Usuário não encontrado. Entre em contato com o administrador para criar sua conta.')
     } else if (usuario.senha !== senha) {
       alert('Senha incorreta!')
     } else {
@@ -51,25 +50,12 @@ function App() {
     }
   }
 
-  const handleForgotPassword = () => {
-    setShowForgotPassword(true)
-  }
 
-  const handleForgotPasswordSubmit = (e) => {
-    e.preventDefault()
-    console.log('Email para recuperação:', forgotEmail)
-    alert('Email de recuperação enviado!')
-    setForgotEmail('')
-    setShowForgotPassword(false)
-  }
 
-  const handleCadastro = () => {
-    setShowCadastro(true)
-  }
+
 
   const voltarLogin = () => {
     setShowCadastro(false)
-    setShowForgotPassword(false)
   }
 
   const handleLogout = () => {
@@ -80,7 +66,7 @@ function App() {
     setSenha('')
   }
 
-  // Validações
+
   const validatePassword = (password) => {
     const hasLength = password.length >= 6;
     const hasLower = /[a-z]/.test(password);
@@ -189,7 +175,7 @@ function App() {
   const handleCadastroSubmit = (e) => {
     e.preventDefault()
     
-    // Validar todos os campos
+
     let hasErrors = false;
     
     if (!validateNome(nome)) {
@@ -233,14 +219,14 @@ function App() {
     console.log('Dados do cadastro:', dadosCadastro)
     alert('Cadastro realizado com sucesso! Redirecionando para o login...')
     
-    // Limpar formulário e voltar ao login
+
     limparFormulario();
     setTimeout(() => {
       setShowCadastro(false);
     }, 1000);
   }
 
-  // Renderizar tela baseada no tipo de usuário logado
+
   if (isLoggedIn) {
     switch (userType) {
       case 'aluno':
@@ -254,33 +240,7 @@ function App() {
     }
   }
 
-  if (showForgotPassword) {
-    return (
-      <div className="login-container">
-        <img src={logoIfpb} alt="Logo IFPB" className="logo" />
-        <h1 style={{textAlign: 'center'}}>Recuperar Senha</h1>
-        <form onSubmit={handleForgotPasswordSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="forgotEmail">Email:</label>
-            <input 
-              type="email" 
-              id="forgotEmail" 
-              value={forgotEmail}
-              onChange={(e) => setForgotEmail(e.target.value)}
-              placeholder="Digite seu email"
-              required 
-            />
-            <button type="submit" className="login-button" style={{marginTop: '1rem', fontSize: '0.9rem', padding: '1rem'}}>
-              Enviar Email de Recuperação
-            </button>
-          </div>
-        </form>
-        <button onClick={voltarLogin} className="forgot-password-button">
-          Voltar ao Login
-        </button>
-      </div>
-    )
-  }
+
 
   if (showCadastro) {
     return (
@@ -426,12 +386,8 @@ function App() {
           Entrar
         </button>
       </form>
-      <button onClick={handleForgotPassword} className="forgot-password-button">
-        Esqueci a senha
-      </button>
-      <button onClick={handleCadastro} className="cadastro-button">
-        Cadastre-se
-      </button>
+
+
     </div>
   )
 }
