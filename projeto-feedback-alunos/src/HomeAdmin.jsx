@@ -19,7 +19,6 @@ export default function HomeAdmin({ userData, onLogout }) {
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
 
-
   const [cursos, setCursos] = useState([
     { id: 1, nome: 'Engenharia Civil', codigo: 'EC001' },
     { id: 2, nome: 'Análise e Desenvolvimento de Sistemas', codigo: 'ADS001' }
@@ -33,19 +32,15 @@ export default function HomeAdmin({ userData, onLogout }) {
   const [novoCurso, setNovoCurso] = useState({ nome: '', codigo: '' });
   const [novaDisciplina, setNovaDisciplina] = useState({ nome: '', codigo: '', curso: '' });
 
-
   const filteredUsuarios = usuarios.filter(user => 
     searchMatricula === '' || user.matricula.includes(searchMatricula)
   );
 
-
   const handleSaveUser = (userData) => {
     if (editingUser) {
-
       setUsuarios(usuarios.map(u => u.id === editingUser.id ? { ...u, ...userData } : u));
       alert('Usuário atualizado com sucesso!');
     } else {
-
       const newUser = { id: Date.now(), ...userData };
       setUsuarios([...usuarios, newUser]);
       alert('Usuário criado com sucesso!');
@@ -71,7 +66,6 @@ export default function HomeAdmin({ userData, onLogout }) {
     }
   };
 
-
   const handleAddCurso = (e) => {
     e.preventDefault();
     if (novoCurso.nome && novoCurso.codigo) {
@@ -87,7 +81,6 @@ export default function HomeAdmin({ userData, onLogout }) {
       setCursos(cursos.filter(c => c.id !== id));
     }
   };
-
 
   const handleAddDisciplina = (e) => {
     e.preventDefault();
@@ -108,7 +101,6 @@ export default function HomeAdmin({ userData, onLogout }) {
   return (
     <div className="home-container">
       <div className="home-content" style={{maxWidth: '1400px', margin: '3rem auto', padding: '3rem'}}>
-
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -121,7 +113,6 @@ export default function HomeAdmin({ userData, onLogout }) {
           <img src={logoIfpb} alt="Logo IFPB" style={{width: '60px', height: 'auto'}} />
           <h1 style={{color: '#00a859', margin: 0, fontSize: '2rem', fontWeight: '700'}}>Painel Administrativo</h1>
         </div>
-
 
         <div style={{
           display: 'flex',

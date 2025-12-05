@@ -1,8 +1,10 @@
+/* CONFIGURAÇÕES GLOBAIS DA PÁGINA */
 * {
   box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* CONFIGURAÇÃO DO FUNDO - Gradiente animado */
 body {
   margin: 0;
   background: linear-gradient(45deg, #00a859, #007a44, #28a745, #20c997, #6f42c1);
@@ -11,6 +13,7 @@ body {
   min-height: 100vh;
 }
 
+/* ANIMAÇÃO DO GRADIENTE DE FUNDO */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -21,6 +24,7 @@ body {
   width: 100%;
 }
 
+/* CONFIGURAÇÃO DO CONTAINER DE LOGIN */
 .login-container {
   background: white;
   max-width: 420px;
@@ -29,16 +33,54 @@ body {
   border-radius: 25px;
   box-shadow: 0 25px 50px rgba(0,0,0,0.15);
   text-align: center;
+  animation: containerBounce 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
 }
 
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(0, 168, 89, 0.05), transparent);
+  animation: shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes containerBounce {
+  0% { transform: scale(0.8) translateY(50px); opacity: 0; }
+  50% { transform: scale(1.05) translateY(-10px); opacity: 0.8; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* CONFIGURAÇÃO DO LOGO - Animação flutuante */
 .logo {
   width: 90px;
   margin-bottom: 1rem;
+  animation: logoFloat 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
 .login-title {
-  color: #000000;
-  font-size: 2rem;
+  color: #333333;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -61,6 +103,7 @@ body {
   color: #000000;
 }
 
+/* CONFIGURAÇÃO DOS CAMPOS DE ENTRADA */
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -68,7 +111,31 @@ body {
   padding: .9rem;
   border-radius: 10px;
   border: 1px solid #ccc;
-  color: #000000;
+  color: #333333;
+  background-color: #ffffff;
+  font-size: 1rem;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666666;
+  opacity: 1;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #00a859;
+  box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2);
+  transform: scale(1.02);
+  animation: inputGlow 0.3s ease-out;
+}
+
+@keyframes inputGlow {
+  0% { box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2); }
+  50% { box-shadow: 0 0 0 4px rgba(0, 168, 89, 0.4); }
+  100% { box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2); }
 }
 
 .home-container {
@@ -85,6 +152,7 @@ body {
   color: #000000;
 }
 
+/* CONFIGURAÇÃO DOS CARDS DE AVALIAÇÃO */
 .avaliacao-card {
   background: #f9f9f9;
   padding: 1.5rem;
@@ -93,6 +161,7 @@ body {
   color: #000000;
 }
 
+/* CONFIGURAÇÃO BASE DOS BOTÕES */
 .btn {
   padding: 6px 16px;
   font-size: 0.9rem;
@@ -109,7 +178,7 @@ body {
   justify-content: center;
 }
 
-
+/* CONFIGURAÇÃO DO BOTÃO PRINCIPAL - Verde */
 .btn-primary {
   background: #00a859;
   color: white;
@@ -119,6 +188,7 @@ body {
   filter: brightness(0.9);
 }
 
+/* CONFIGURAÇÃO DO BOTÃO DE PERIGO - Vermelho */
 .btn-danger {
   padding: 5px 12px;
   font-size: 0.8rem;
@@ -137,4 +207,59 @@ body {
 
 .btn-secondary:hover {
   filter: brightness(0.9);
+}
+
+/* CONFIGURAÇÃO DO BOTÃO DE LOGIN - Gradiente animado */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(45deg, #00a859, #28a745);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.login-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 168, 89, 0.4);
+  animation: buttonWiggle 0.5s ease-in-out;
+}
+
+@keyframes buttonWiggle {
+  0%, 100% { transform: translateY(-3px) scale(1.02) rotate(0deg); }
+  25% { transform: translateY(-3px) scale(1.02) rotate(1deg); }
+  75% { transform: translateY(-3px) scale(1.02) rotate(-1deg); }
+}
+
+.login-button.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.error-message {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+  padding: 0.8rem;
+  border-radius: 8px;
+  border-left: 4px solid #dc3545;
+  font-size: 0.9rem;
+}
+
+input[type="password"]::-ms-reveal {
+  filter: invert(0.3) sepia(1) saturate(5) hue-rotate(175deg);
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  filter: invert(0.3) sepia(1) saturate(5) hue-rotate(175deg);
 }

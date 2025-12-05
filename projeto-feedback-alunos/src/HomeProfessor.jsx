@@ -3,8 +3,10 @@ import "./App.css";
 import logoIfpb from './assets/logo-ifpb.png';
 
 export default function HomeProfessor({ userData, onLogout }) {
+  // CONTROLE DE NAVEGAÇÃO
   const [view, setView] = useState("menu");
 
+  // DADOS DE AVALIAÇÕES PARA DEMONSTRAÇÃO
   const [avaliacoes, setAvaliacoes] = useState([
     { id: 1, disciplina: 'Matemática', curso: 'Engenharia', nota: 4, comentario: 'Boa didática', anonima: true },
     { id: 2, disciplina: 'Programação', curso: 'ADS', nota: 5, comentario: 'Excelente professor', anonima: false, matricula: '202315020035' },
@@ -12,12 +14,14 @@ export default function HomeProfessor({ userData, onLogout }) {
     { id: 4, disciplina: 'Programação', curso: 'ADS', nota: 4, comentario: 'Bom conteúdo', anonima: true }
   ]);
 
+  // FUNÇÃO PARA CALCULAR MÉDIA GERAL
   const calcularMedia = () => {
     if (!avaliacoes.length) return 0;
     const soma = avaliacoes.reduce((acc, av) => acc + av.nota, 0);
     return (soma / avaliacoes.length).toFixed(1);
   };
 
+  // FUNÇÃO PARA CALCULAR MÉDIA POR DISCIPLINA
   const calcularMediaPorDisciplina = () => {
     const disciplinas = {};
     avaliacoes.forEach(av => {
@@ -69,31 +73,8 @@ export default function HomeProfessor({ userData, onLogout }) {
         }}>
           <div style={{display: 'flex', gap: '1rem'}}>
             <button 
-              style={{
-                background: '#00a859',
-                color: 'white',
-                border: '2px solid #00a859',
-                padding: '10px 20px',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              Dashboard
-            </button>
-            <button 
               onClick={() => setView("minhasAvaliacoes")}
-              style={{
-                background: 'transparent',
-                color: '#00a859',
-                border: '2px solid #00a859',
-                padding: '10px 20px',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                transition: 'all 0.3s ease'
-              }}
+              className="btn btn-primary"
             >
               Minhas Avaliações
             </button>
@@ -109,15 +90,7 @@ export default function HomeProfessor({ userData, onLogout }) {
             </span>
             <button 
               onClick={onLogout}
-              style={{
-                background: '#dc3545',
-                color: 'white',
-                border: 'none',
-                padding: '10px 20px',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className="btn btn-danger"
             >
               Sair
             </button>
@@ -132,29 +105,41 @@ export default function HomeProfessor({ userData, onLogout }) {
 
         {view === "minhasAvaliacoes" && (
           <>
-            <div className="estatisticas" style={{ marginBottom: "20px" }}>
-              <h3 style={{ color: "#00a859" }}>Estatísticas das Avaliações</h3>
-              <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: "15px" }}>
-                <div style={{ background: "#00a859", color: "white", padding: "15px", borderRadius: "10px", minWidth: "120px" }}>
-                  <div style={{ fontSize: "2rem", fontWeight: "bold" }}>{calcularMedia()}</div>
-                  <div style={{ fontSize: "0.9rem" }}>Média Geral</div>
+            {/* DASHBOARD COM ESTATÍSTICAS */}
+            <div className="estatisticas" style={{ marginBottom: "30px" }}>
+              <h3 style={{ color: "#00a859", marginBottom: "20px", textAlign: "center" }}>Estatísticas das Avaliações</h3>
+              
+              {/* CARDS DE MÉTRICA */}
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "20px", marginBottom: "30px" }}>
+                <div style={{ background: "#00a859", color: "white", padding: "20px", borderRadius: "15px", minWidth: "150px", textAlign: "center", boxShadow: "0 4px 15px rgba(0, 168, 89, 0.3)" }}>
+                  <div style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "5px" }}>{calcularMedia()}</div>
+                  <div style={{ fontSize: "1rem", opacity: "0.9" }}>Média Geral</div>
                 </div>
-                <div style={{ background: "#28a745", color: "white", padding: "15px", borderRadius: "10px", minWidth: "120px" }}>
-                  <div style={{ fontSize: "2rem", fontWeight: "bold" }}>{avaliacoes.length}</div>
-                  <div style={{ fontSize: "0.9rem" }}>Total Avaliações</div>
+                <div style={{ background: "#28a745", color: "white", padding: "20px", borderRadius: "15px", minWidth: "150px", textAlign: "center", boxShadow: "0 4px 15px rgba(40, 167, 69, 0.3)" }}>
+                  <div style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "5px" }}>{avaliacoes.length}</div>
+                  <div style={{ fontSize: "1rem", opacity: "0.9" }}>Total Avaliações</div>
                 </div>
               </div>
 
-              <div style={{ marginTop: "20px" }}>
-                <h4 style={{ color: "#00a859" }}>Média por Disciplina:</h4>
-                <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "10px" }}>
-                  {calcularMediaPorDisciplina().map((item, index) => (
-                    <div key={index} style={{ background: "#f8f9fa", padding: "10px 15px", borderRadius: "8px", border: "2px solid #00a859", color: "#333" }}>
-                      <strong style={{ color: "#00a859" }}>{item.disciplina}</strong><br/>
-                      <span style={{ color: "#333", fontWeight: "600" }}>Média: {item.media} ({item.avaliacoes} avaliações)</span>
-                    </div>
-                  ))}
-                </div>
+              <h4 style={{ color: "#00a859", marginBottom: "15px", textAlign: "center" }}>Média por Disciplina</h4>
+              
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px" }}>
+                {calcularMediaPorDisciplina().map((item, index) => (
+                  <div key={index} style={{ 
+                    background: "#f8f9fa", 
+                    padding: "15px 20px", 
+                    borderRadius: "12px", 
+                    border: "2px solid #00a859", 
+                    color: "#333",
+                    textAlign: "center",
+                    minWidth: "180px",
+                    boxShadow: "0 2px 10px rgba(0, 168, 89, 0.1)"
+                  }}>
+                    <strong style={{ color: "#00a859", fontSize: "1.1rem", display: "block", marginBottom: "8px" }}>{item.disciplina}</strong>
+                    <span style={{ color: "#333", fontWeight: "600", fontSize: "0.95rem" }}>Média: {item.media}</span>
+                    <div style={{ color: "#666", fontSize: "0.85rem", marginTop: "4px" }}>({item.avaliacoes} avaliações)</div>
+                  </div>
+                ))}
               </div>
             </div>
 

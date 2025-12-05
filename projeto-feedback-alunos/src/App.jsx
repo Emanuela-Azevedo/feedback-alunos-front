@@ -6,33 +6,49 @@ import HomeProfessor from './HomeProfessor'
 import HomeAdmin from './HomeAdmin'
 
 function App() {
+  // ESTADOS PARA CONTROLE DE LOGIN
   const [matricula, setMatricula] = useState('')
   const [senha, setSenha] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userType, setUserType] = useState(null)
   const [userData, setUserData] = useState(null)
 
-  const handleLogin = (e) => {
+  // ESTADOS PARA FEEDBACK VISUAL
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
+
+  // FUNÇÃO DE AUTENTICAÇÃO
+  const handleLogin = async (e) => {
     e.preventDefault()
+    setErro('')
+    setCarregando(true)
     
-    // Usuários para teste
+    // Simula delay de autenticação
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // BASE DE USUÁRIOS PARA DEMONSTRAÇÃO
     const usuarios = {
       '202315020035': { tipo: 'aluno', nome: 'João Silva', senha: 'Aluno123!' },
       '202015030025': { tipo: 'professor', nome: 'Prof. Maria Santos', senha: 'Prof123!' },
       '999999999999': { tipo: 'admin', nome: 'Administrador', senha: 'Admin123!' }
     }
     
-    const usuario = usuarios[matricula]
+    const matriculaLimpa = matricula.trim()
+    const senhaLimpa = senha.trim()
+    
+    const usuario = usuarios[matriculaLimpa]
     
     if (!usuario) {
-      alert('Usuário não encontrado. Entre em contato com o administrador para criar sua conta.')
-    } else if (usuario.senha !== senha) {
-      alert('Senha incorreta!')
+      setErro('Usuário não encontrado. Entre em contato com o administrador.')
+    } else if (usuario.senha !== senhaLimpa) {
+      setErro('Senha incorreta!')
     } else {
       setUserData(usuario)
       setUserType(usuario.tipo)
       setIsLoggedIn(true)
     }
+    
+    setCarregando(false)
   }
 
   const handleLogout = () => {
@@ -43,10 +59,11 @@ function App() {
     setSenha('')
   }
 
+  // ROTEAMENTO BASEADO NO TIPO DE USUÁRIO
   if (isLoggedIn) {
     switch (userType) {
       case 'aluno':
-        return <HomeAluno userData={userData} onLogout={handleLogout} />
+        return <HomeAluno userData={userData} onLogout={handleLogout} professores={[{matricula: '202015030025', nome: 'Prof. Maria Santos'}]} />
       case 'professor':
         return <HomeProfessor userData={userData} onLogout={handleLogout} />
       case 'admin':
@@ -56,11 +73,14 @@ function App() {
     }
   }
 
+  // TELA DE LOGIN
   return (
     <div className="login-container">
+      {/* LOGO COM ANIMAÇÃO */}
       <img src={logoIfpb} alt="Logo IFPB" className="logo" />
-      <h1>Sistema de Feedback</h1>
+      <h1 className="login-title">Login</h1>
       
+      {/* FORMULÁRIO DE LOGIN */}
       <form onSubmit={handleLogin} className="login-form">
         <div className="form-group">
           <label htmlFor="matricula">Matrícula:</label>
@@ -86,17 +106,16 @@ function App() {
           />
         </div>
         
-        <button type="submit" className="login-button">
-          Entrar
+        {erro && (
+          <div className="error-message" style={{textAlign: 'center', marginBottom: '1rem'}}>
+            {erro}
+          </div>
+        )}
+        
+        <button type="submit" className={`login-button ${carregando ? 'loading' : ''}`} disabled={carregando}>
+          {carregando ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
-      
-      <div style={{marginTop: '2rem', padding: '1rem', background: 'rgba(0,168,89,0.1)', borderRadius: '10px'}}>
-        <h4 style={{color: '#00a859', marginBottom: '0.5rem'}}>Usuários de teste:</h4>
-        <p style={{fontSize: '0.8rem', margin: '0.2rem 0'}}>Aluno: 202315020035 / Aluno123!</p>
-        <p style={{fontSize: '0.8rem', margin: '0.2rem 0'}}>Professor: 202015030025 / Prof123!</p>
-        <p style={{fontSize: '0.8rem', margin: '0.2rem 0'}}>Admin: 999999999999 / Admin123!</p>
-      </div>
     </div>
   )
 }
