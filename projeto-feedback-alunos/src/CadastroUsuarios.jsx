@@ -171,23 +171,14 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
         )}
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button type="submit" className="login-button" style={{ flex: 1 }}>
+          <button type="submit" className="btn btn-primary">
             {initialUser ? 'Atualizar' : 'Criar'} Usuário
           </button>
           {onCancel && (
             <button
               type="button"
               onClick={onCancel}
-              style={{
-                flex: 1,
-                padding: '1rem',
-                background: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className="btn btn-secondary"
             >
               Cancelar
             </button>

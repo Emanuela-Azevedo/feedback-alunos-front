@@ -223,12 +223,11 @@ export default function HomeAdmin({ userData, onLogout }) {
                 placeholder="Buscar por matrícula..."
                 value={searchMatricula}
                 onChange={(e) => setSearchMatricula(e.target.value)}
-                style={{flex: 1}}
+                style={{width: '300px', padding: '.7rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa'}}
               />
               <button 
                 onClick={() => setShowCreateUser(true)}
-                className="login-button"
-                style={{padding: '0.8rem 1.5rem', fontSize: '0.9rem', margin: 0}}
+                className="btn btn-primary"
               >
                 {editingUser ? 'Editar Usuário' : 'Criar Usuário'}
               </button>
@@ -245,8 +244,8 @@ export default function HomeAdmin({ userData, onLogout }) {
               />
             )}
 
-            {filteredUsuarios.map(usuario => (
-              <div key={usuario.id} className="usuario-card">
+            {!showCreateUser && filteredUsuarios.map(usuario => (
+              <div key={usuario.id} className="avaliacao-card">
                 <h3>{usuario.nome}</h3>
                 <p>Matrícula: {usuario.matricula}</p>
                 <p>Tipo: {usuario.tipo}</p>
@@ -255,29 +254,13 @@ export default function HomeAdmin({ userData, onLogout }) {
                 <div style={{display: 'flex', gap: '8px', marginTop: '10px'}}>
                   <button 
                     onClick={() => handleEditUser(usuario)}
-                    style={{
-                      background: '#28a745',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem'
-                    }}
+                    className="btn btn-primary"
                   >
                     Editar
                   </button>
                   <button 
                     onClick={() => handleDeleteUser(usuario.id)}
-                    style={{
-                      background: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem'
-                    }}
+                    className="btn btn-danger"
                   >
                     Excluir
                   </button>
@@ -297,16 +280,8 @@ export default function HomeAdmin({ userData, onLogout }) {
                 <p>Aluno: {avaliacao.aluno}</p>
                 <button 
                   onClick={() => handleDeleteAvaliacao(avaliacao.id)}
-                  style={{
-                    background: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    padding: '4px 8px',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    marginTop: '10px',
-                    fontSize: '0.8rem'
-                  }}
+                  className="btn btn-danger"
+                  style={{marginTop: '10px'}}
                 >
                   Excluir
                 </button>
@@ -325,7 +300,7 @@ export default function HomeAdmin({ userData, onLogout }) {
                   placeholder="Nome do curso"
                   value={novoCurso.nome}
                   onChange={(e) => setNovoCurso({...novoCurso, nome: e.target.value})}
-                  style={{flex: 1, padding: '8px', borderRadius: '5px', border: '1px solid #ddd'}}
+                  style={{width: '250px', padding: '.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa'}}
                   required
                 />
                 <input
@@ -333,29 +308,21 @@ export default function HomeAdmin({ userData, onLogout }) {
                   placeholder="Código"
                   value={novoCurso.codigo}
                   onChange={(e) => setNovoCurso({...novoCurso, codigo: e.target.value})}
-                  style={{width: '120px', padding: '8px', borderRadius: '5px', border: '1px solid #ddd'}}
+                  style={{width: '100px', padding: '.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa'}}
                   required
                 />
-                <button type="submit" className="login-button" style={{padding: '8px 16px', margin: 0, fontSize: '0.9rem'}}>Adicionar</button>
+                <button type="submit" className="btn btn-primary">Adicionar</button>
               </div>
             </form>
             
             <div className="usuarios-list">
               {cursos.map(curso => (
-                <div key={curso.id} className="usuario-card">
+                <div key={curso.id} className="avaliacao-card">
                   <h3>{curso.nome}</h3>
                   <p>Código: {curso.codigo}</p>
                   <button 
                     onClick={() => handleDeleteCurso(curso.id)}
-                    style={{
-                      background: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem'
-                    }}
+                    className="btn btn-danger"
                   >
                     Excluir
                   </button>
@@ -375,7 +342,7 @@ export default function HomeAdmin({ userData, onLogout }) {
                   placeholder="Nome da disciplina"
                   value={novaDisciplina.nome}
                   onChange={(e) => setNovaDisciplina({...novaDisciplina, nome: e.target.value})}
-                  style={{flex: 1, padding: '8px', borderRadius: '5px', border: '1px solid #ddd'}}
+                  style={{width: '200px', padding: '.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa'}}
                   required
                 />
                 <input
@@ -383,13 +350,13 @@ export default function HomeAdmin({ userData, onLogout }) {
                   placeholder="Código"
                   value={novaDisciplina.codigo}
                   onChange={(e) => setNovaDisciplina({...novaDisciplina, codigo: e.target.value})}
-                  style={{width: '120px', padding: '8px', borderRadius: '5px', border: '1px solid #ddd'}}
+                  style={{width: '100px', padding: '.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa'}}
                   required
                 />
                 <select
                   value={novaDisciplina.curso}
                   onChange={(e) => setNovaDisciplina({...novaDisciplina, curso: e.target.value})}
-                  style={{width: '200px', padding: '8px', borderRadius: '5px', border: '1px solid #ddd'}}
+                  style={{width: '180px', padding: '.5rem', borderRadius: '10px', border: '1px solid #ccc', backgroundColor: '#f8f9fa', color: '#333'}}
                   required
                 >
                   <option value="">Selecione o curso</option>
@@ -397,27 +364,19 @@ export default function HomeAdmin({ userData, onLogout }) {
                     <option key={curso.id} value={curso.nome}>{curso.nome}</option>
                   ))}
                 </select>
-                <button type="submit" className="login-button" style={{padding: '8px 16px', margin: 0, fontSize: '0.9rem'}}>Adicionar</button>
+                <button type="submit" className="btn btn-primary">Adicionar</button>
               </div>
             </form>
             
             <div className="usuarios-list">
               {disciplinas.map(disciplina => (
-                <div key={disciplina.id} className="usuario-card">
+                <div key={disciplina.id} className="avaliacao-card">
                   <h3>{disciplina.nome}</h3>
                   <p>Código: {disciplina.codigo}</p>
                   <p>Curso: {disciplina.curso}</p>
                   <button 
                     onClick={() => handleDeleteDisciplina(disciplina.id)}
-                    style={{
-                      background: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.8rem'
-                    }}
+                    className="btn btn-danger"
                   >
                     Excluir
                   </button>

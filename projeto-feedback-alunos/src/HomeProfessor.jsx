@@ -5,13 +5,14 @@ import logoIfpb from './assets/logo-ifpb.png';
 export default function HomeProfessor({ userData, onLogout }) {
   // CONTROLE DE NAVEGAÇÃO
   const [view, setView] = useState("menu");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // DADOS DE AVALIAÇÕES PARA DEMONSTRAÇÃO
   const [avaliacoes, setAvaliacoes] = useState([
-    { id: 1, disciplina: 'Matemática', curso: 'Engenharia', nota: 4, comentario: 'Boa didática', anonima: true },
-    { id: 2, disciplina: 'Programação', curso: 'ADS', nota: 5, comentario: 'Excelente professor', anonima: false, matricula: '202315020035' },
-    { id: 3, disciplina: 'Matemática', curso: 'Engenharia', nota: 3, comentario: 'Pode melhorar', anonima: true },
-    { id: 4, disciplina: 'Programação', curso: 'ADS', nota: 4, comentario: 'Bom conteúdo', anonima: true }
+    { id: 1, disciplina: 'Matemática', curso: 'Engenharia', nota: 4, comentario: 'Boa didática', anonima: true, data: '2024-01-15' },
+    { id: 2, disciplina: 'Programação', curso: 'ADS', nota: 5, comentario: 'Excelente professor', anonima: false, matricula: '202315020035', data: '2024-01-10' },
+    { id: 3, disciplina: 'Matemática', curso: 'Engenharia', nota: 3, comentario: 'Pode melhorar', anonima: true, data: '2024-01-08' },
+    { id: 4, disciplina: 'Programação', curso: 'ADS', nota: 4, comentario: 'Bom conteúdo', anonima: true, data: '2024-01-05' }
   ]);
 
   // FUNÇÃO PARA CALCULAR MÉDIA GERAL
@@ -41,7 +42,10 @@ export default function HomeProfessor({ userData, onLogout }) {
       <h3>{avaliacao.disciplina} - {avaliacao.curso}</h3>
       <div className="nota">Nota: {avaliacao.nota}/5</div>
       <p>{avaliacao.comentario}</p>
-      <small>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</small>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px'}}>
+        <small>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</small>
+        <small style={{color: '#666'}}>Data: {new Date(avaliacao.data).toLocaleDateString('pt-BR')}</small>
+      </div>
     </div>
   );
 
@@ -144,7 +148,40 @@ export default function HomeProfessor({ userData, onLogout }) {
             </div>
 
             <div className="avaliacoes-list">
-              {avaliacoes.map((av) => <AvaliacaoCard key={av.id} avaliacao={av} />)}
+              {avaliacoes.length > 0 ? (
+                <div style={{ position: 'relative', maxWidth: '600px', margin: '0 auto' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button 
+                      onClick={() => setCurrentIndex(prev => prev > 0 ? prev - 1 : avaliacoes.length - 1)}
+                      className="btn btn-primary"
+                      style={{ fontSize: '1.2rem', padding: '8px 12px' }}
+                    >
+                      ←
+                    </button>
+                    
+                    <div style={{ flex: 1 }}>
+                      <AvaliacaoCard avaliacao={avaliacoes[currentIndex]} />
+                    </div>
+                    
+                    <button 
+                      onClick={() => setCurrentIndex(prev => prev < avaliacoes.length - 1 ? prev + 1 : 0)}
+                      className="btn btn-primary"
+                      style={{ fontSize: '1.2rem', padding: '8px 12px' }}
+                    >
+                      →
+                    </button>
+                  </div>
+                  
+                  <div style={{ textAlign: 'center', marginTop: '1rem', color: '#666' }}>
+                    {currentIndex + 1} de {avaliacoes.length}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                  <h3>Nenhuma avaliação encontrada</h3>
+                  <p>Você ainda não recebeu nenhuma avaliação.</p>
+                </div>
+              )}
             </div>
 
             <button onClick={() => setView("menu")} className="btn btn-secondary" style={{ marginTop: "20px" }}>

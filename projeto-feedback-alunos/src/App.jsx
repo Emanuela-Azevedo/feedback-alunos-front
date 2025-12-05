@@ -63,7 +63,7 @@ function App() {
   if (isLoggedIn) {
     switch (userType) {
       case 'aluno':
-        return <HomeAluno userData={userData} onLogout={handleLogout} professores={[{matricula: '202015030025', nome: 'Prof. Maria Santos'}]} />
+        return <HomeAluno userData={userData} onLogout={handleLogout} />
       case 'professor':
         return <HomeProfessor userData={userData} onLogout={handleLogout} />
       case 'admin':
