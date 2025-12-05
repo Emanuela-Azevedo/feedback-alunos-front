@@ -15,7 +15,6 @@ function App() {
   const [userData, setUserData] = useState(null)
   
   const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
   const [curso, setCurso] = useState('')
   const [especialidade, setEspecialidade] = useState('')
   const [perfil, setPerfil] = useState('aluno')
@@ -23,7 +22,6 @@ function App() {
   const [matriculaError, setMatriculaError] = useState('')
   const [nomeError, setNomeError] = useState('')
   const [cursoError, setCursoError] = useState('')
-  const [emailError, setEmailError] = useState('')
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
 
 
@@ -50,10 +48,6 @@ function App() {
     }
   }
 
-
-
-
-
   const voltarLogin = () => {
     setShowCadastro(false)
   }
@@ -66,7 +60,6 @@ function App() {
     setSenha('')
   }
 
-
   const validatePassword = (password) => {
     const hasLength = password.length >= 6;
     const hasLower = /[a-z]/.test(password);
@@ -78,25 +71,20 @@ function App() {
   };
 
   const validateMatricula = (matricula) => {
-    return /^\d{12}$/.test(matricula); // 12 dígitos
+    return /^\d{12}$/.test(matricula);
   };
 
   const validateNome = (nome) => {
-    return nome.trim().split(' ').length >= 2; // Nome e sobrenome
-  };
-
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return nome.trim().split(' ').length >= 2;
   };
 
   const limparFormulario = () => {
     setNome('');
-    setEmail('');
     setMatricula('');
     setSenha('');
     setCurso('');
     setEspecialidade('');
-    setPerfil('aluno');
+    setPerfil('');
     setSenhaError('');
     setMatriculaError('');
     setNomeError('');
@@ -116,19 +104,9 @@ function App() {
     }
   };
 
-  const handleEmailChange = (e) => {
-    const newEmail = e.target.value;
-    setEmail(newEmail);
-    
-    if (newEmail.length > 0 && !validateEmail(newEmail)) {
-      setEmailError('Digite um email válido');
-    } else {
-      setEmailError('');
-    }
-  };
 
   const handleMatriculaChange = (e) => {
-    const newMatricula = e.target.value.replace(/\D/g, ''); // Apenas números
+    const newMatricula = e.target.value.replace(/\D/g, '');
     setMatricula(newMatricula);
     
     if (newMatricula.length > 0 && !validateMatricula(newMatricula)) {
@@ -164,7 +142,6 @@ function App() {
     const newPerfil = e.target.value;
     setPerfil(newPerfil);
     
-    // Validar curso se mudou para aluno
     if (newPerfil === 'aluno' && !curso) {
       setCursoError('Curso é obrigatório para alunos');
     } else {
@@ -180,11 +157,6 @@ function App() {
     
     if (!validateNome(nome)) {
       setNomeError('Digite nome e sobrenome completos');
-      hasErrors = true;
-    }
-    
-    if (!validateEmail(email)) {
-      setEmailError('Digite um email válido');
       hasErrors = true;
     }
     
@@ -207,7 +179,6 @@ function App() {
     
     const dadosCadastro = {
       nome,
-      email,
       matricula,
       senha,
       curso,
@@ -260,18 +231,6 @@ function App() {
               required 
             />
             {nomeError && <div className="error-message">{nomeError}</div>}
-          </div>
-          <div className={`form-group ${emailError ? 'error' : ''}`}>
-            <label htmlFor="email">Email:</label>
-            <input 
-              type="email" 
-              id="email" 
-              value={email}
-              onChange={handleEmailChange}
-              placeholder="Digite seu email"
-              required 
-            />
-            {emailError && <div className="error-message">{emailError}</div>}
           </div>
           <div className={`form-group ${matriculaError ? 'error' : ''}`}>
             <label htmlFor="matricula">Matrícula:</label>

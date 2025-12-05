@@ -9,7 +9,6 @@ const PasswordInput = ({ value, onChange, showRequirements = true }) => {
       const result = validatePassword(value);
       setValidation(result);
       
-      // Atualizar UI se existir container
       const container = document.querySelector('.password-validation-container');
       if (container) {
         updatePasswordValidation(value, container);

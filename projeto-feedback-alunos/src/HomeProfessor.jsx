@@ -8,30 +8,36 @@ export default function HomeProfessor({ userData, onLogout }) {
     { id: 2, disciplina: 'Programação', curso: 'ADS', nota: 5, comentario: 'Excelente professor', anonima: false, matricula: '202315020035' },
     { id: 3, disciplina: 'Matemática', curso: 'Engenharia', nota: 3, comentario: 'Pode melhorar', anonima: true },
     { id: 4, disciplina: 'Programação', curso: 'ADS', nota: 4, comentario: 'Bom conteúdo', anonima: true }
-  ])
-  
+  ]);
+
   const calcularMedia = () => {
-    if (avaliacoes.length === 0) return 0
-    const soma = avaliacoes.reduce((acc, av) => acc + av.nota, 0)
-    return (soma / avaliacoes.length).toFixed(1)
-  }
-  
+    if (!avaliacoes.length) return 0;
+    const soma = avaliacoes.reduce((acc, av) => acc + av.nota, 0);
+    return (soma / avaliacoes.length).toFixed(1);
+  };
+
   const calcularMediaPorDisciplina = () => {
-    const disciplinas = {}
+    const disciplinas = {};
     avaliacoes.forEach(av => {
-      if (!disciplinas[av.disciplina]) {
-        disciplinas[av.disciplina] = { soma: 0, count: 0 }
-      }
-      disciplinas[av.disciplina].soma += av.nota
-      disciplinas[av.disciplina].count += 1
-    })
-    
+      if (!disciplinas[av.disciplina]) disciplinas[av.disciplina] = { soma: 0, count: 0 };
+      disciplinas[av.disciplina].soma += av.nota;
+      disciplinas[av.disciplina].count += 1;
+    });
     return Object.entries(disciplinas).map(([disciplina, data]) => ({
       disciplina,
       media: (data.soma / data.count).toFixed(1),
       avaliacoes: data.count
-    }))
-  }
+    }));
+  };
+
+  const AvaliacaoCard = ({ avaliacao }) => (
+    <div className="avaliacao-card">
+      <h3>{avaliacao.disciplina} - {avaliacao.curso}</h3>
+      <div className="nota">Nota: {avaliacao.nota}/5</div>
+      <p>{avaliacao.comentario}</p>
+      <small>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</small>
+    </div>
+  );
 
   return (
     <div className="login-container">
@@ -52,6 +58,7 @@ export default function HomeProfessor({ userData, onLogout }) {
           Sair
         </button>
       </div>
+
       <h2 style={{fontSize: '1.8rem', textAlign: 'center'}}>Portal do Professor - {userData.nome}</h2>
 
       <main>
@@ -63,7 +70,6 @@ export default function HomeProfessor({ userData, onLogout }) {
           textAlign: 'center'
         }}>
           <h3 style={{color: '#00a859', marginBottom: '15px'}}>Estatísticas das Avaliações</h3>
-          
           <div style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '15px'}}>
             <div style={{
               background: '#00a859',
@@ -75,7 +81,6 @@ export default function HomeProfessor({ userData, onLogout }) {
               <div style={{fontSize: '2rem', fontWeight: 'bold'}}>{calcularMedia()}</div>
               <div style={{fontSize: '0.9rem'}}>Média Geral</div>
             </div>
-            
             <div style={{
               background: '#28a745',
               color: 'white',
@@ -87,7 +92,7 @@ export default function HomeProfessor({ userData, onLogout }) {
               <div style={{fontSize: '0.9rem'}}>Total Avaliações</div>
             </div>
           </div>
-          
+
           <div style={{marginTop: '20px'}}>
             <h4 style={{color: '#00a859', marginBottom: '10px'}}>Média por Disciplina:</h4>
             <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '10px'}}>
@@ -106,20 +111,10 @@ export default function HomeProfessor({ userData, onLogout }) {
             </div>
           </div>
         </div>
-        
+
         <h2 style={{textAlign: 'center', fontSize: '1.8rem'}}>Minhas Avaliações</h2>
-        
         <div className="avaliacoes-list">
-          {avaliacoes.map(avaliacao => (
-            <div key={avaliacao.id} className="avaliacao-card">
-              <h3>{avaliacao.disciplina} - {avaliacao.curso}</h3>
-              <div className="nota">Nota: {avaliacao.nota}/5</div>
-              <p>{avaliacao.comentario}</p>
-              <small>
-                {avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}
-              </small>
-            </div>
-          ))}
+          {avaliacoes.map(av => <AvaliacaoCard key={av.id} avaliacao={av} />)}
         </div>
       </main>
     </div>
