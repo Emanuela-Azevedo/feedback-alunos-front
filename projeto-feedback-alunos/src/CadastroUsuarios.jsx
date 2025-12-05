@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./App.css";
 
 const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,6 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
 
   const [errors, setErrors] = useState({});
 
-  // Se receber um usuário para edição, preencher o formulário
   useEffect(() => {
     if (initialUser) {
       setFormData({
@@ -47,9 +47,12 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
 
     if (!validateNome(formData.nome)) newErrors.nome = 'Digite nome e sobrenome';
     if (!validateMatricula(formData.matricula)) newErrors.matricula = 'Matrícula deve ter 12 dígitos';
-    if (formData.senha && !validatePassword(formData.senha)) newErrors.senha = 'Senha deve ter 6+ caracteres, maiúscula, minúscula, número e especial';
-    if (formData.senha && formData.senha !== formData.confirmPassword) newErrors.confirmPassword = 'As senhas não coincidem';
-    if (formData.tipo === 'aluno' && !formData.curso) newErrors.curso = 'Curso é obrigatório para alunos';
+    if (formData.senha && !validatePassword(formData.senha))
+      newErrors.senha = 'Senha deve ter 6+ caracteres, maiúscula, minúscula, número e especial';
+    if (formData.senha && formData.senha !== formData.confirmPassword)
+      newErrors.confirmPassword = 'As senhas não coincidem';
+    if (formData.tipo === 'aluno' && !formData.curso)
+      newErrors.curso = 'Curso é obrigatório para alunos';
 
     setErrors(newErrors);
 
@@ -68,7 +71,9 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
   };
 
   return (
-    <div className="create-user-form">
+    <div style={{background: 'rgba(255,255,255,0.95)', padding: '2rem', borderRadius: '15px', marginBottom: '2rem'}}>
+      <h2 style={{color: '#00a859', marginBottom: '1.5rem', textAlign: 'center'}}>Cadastro de Usuários</h2>
+
       <form onSubmit={handleSubmit} className="login-form">
         <div className={`form-group ${errors.nome ? 'error' : ''}`}>
           <label>Nome Completo:</label>
@@ -116,7 +121,9 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
             placeholder="Confirme a senha"
             required={!!formData.senha}
           />
-          {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
+          {errors.confirmPassword && (
+            <div className="error-message">{errors.confirmPassword}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -141,7 +148,9 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
             >
               <option value="">Selecione um curso</option>
               <option value="Engenharia Civil">Engenharia Civil</option>
-              <option value="Análise e Desenvolvimento de Sistemas">Análise e Desenvolvimento de Sistemas</option>
+              <option value="Análise e Desenvolvimento de Sistemas">
+                Análise e Desenvolvimento de Sistemas
+              </option>
             </select>
             {errors.curso && <div className="error-message">{errors.curso}</div>}
           </div>
@@ -153,7 +162,9 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
             <input
               type="text"
               value={formData.especialidade}
-              onChange={(e) => setFormData({ ...formData, especialidade: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, especialidade: e.target.value })
+              }
               placeholder="Digite a especialidade"
             />
           </div>
@@ -167,8 +178,16 @@ const CadastroUsuarios = ({ initialUser = null, onSave, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="cadastro-button"
-              style={{ flex: 1 }}
+              style={{
+                flex: 1,
+                padding: '1rem',
+                background: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontWeight: '600'
+              }}
             >
               Cancelar
             </button>
