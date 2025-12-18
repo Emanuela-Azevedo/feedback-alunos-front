@@ -1,43 +1,26 @@
 import React, { useState } from "react";
-import "./App.css";
-import logoIfpb from './assets/logo-ifpb.png';
+import logoIfpb from '../../assets/logo-ifpb.png';
+import { calcularMedia, calcularMediaPorDisciplina } from '../../utils/calculoAvaliacoes';
+import { formatDate } from '../../utils/formatters';
+import { testEvaluations } from '../../data';
 
-export default function HomeProfessor({ userData, onLogout }) {
+export default function TeacherPage({ userData, onLogout }) {
   const [view, setView] = useState("menu");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [avaliacoes, setAvaliacoes] = useState([
-    { id: 1, disciplina: 'Matemática', curso: 'Engenharia', nota: 4, comentario: 'Boa didática', anonima: true },
-    { id: 2, disciplina: 'Programação', curso: 'ADS', nota: 5, comentario: 'Excelente professor', anonima: false, matricula: '202315020035' },
-    { id: 3, disciplina: 'Matemática', curso: 'Engenharia', nota: 3, comentario: 'Pode melhorar', anonima: true },
-    { id: 4, disciplina: 'Programação', curso: 'ADS', nota: 4, comentario: 'Bom conteúdo', anonima: true }
-  ]);
+  const [avaliacoes, setAvaliacoes] = useState(testEvaluations);
 
-  const calcularMedia = () => {
-    if (!avaliacoes.length) return 0;
-    const soma = avaliacoes.reduce((acc, av) => acc + av.nota, 0);
-    return (soma / avaliacoes.length).toFixed(1);
-  };
 
-  const calcularMediaPorDisciplina = () => {
-    const disciplinas = {};
-    avaliacoes.forEach(av => {
-      if (!disciplinas[av.disciplina]) disciplinas[av.disciplina] = { soma: 0, count: 0 };
-      disciplinas[av.disciplina].soma += av.nota;
-      disciplinas[av.disciplina].count += 1;
-    });
-    return Object.entries(disciplinas).map(([disciplina, data]) => ({
-      disciplina,
-      media: (data.soma / data.count).toFixed(1),
-      avaliacoes: data.count
-    }));
-  };
 
   const AvaliacaoCard = ({ avaliacao }) => (
     <div className="avaliacao-card">
       <h3>{avaliacao.disciplina} - {avaliacao.curso}</h3>
       <div className="nota">Nota: {avaliacao.nota}/5</div>
       <p>{avaliacao.comentario}</p>
-      <small>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</small>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px'}}>
+        <small>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</small>
+        <small style={{color: '#666'}}>Data: {formatDate(avaliacao.data)}</small>
+      </div>
     </div>
   );
 
@@ -69,24 +52,10 @@ export default function HomeProfessor({ userData, onLogout }) {
         }}>
           <div style={{display: 'flex', gap: '1rem'}}>
             <button 
+              onClick={() => setView("minhasAvaliacoes")}
               style={{
                 background: '#00a859',
                 color: 'white',
-                border: '2px solid #00a859',
-                padding: '10px 20px',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '600',
-                transition: 'all 0.3s ease'
-              }}
-            >
-              Dashboard
-            </button>
-            <button 
-              onClick={() => setView("minhasAvaliacoes")}
-              style={{
-                background: 'transparent',
-                color: '#00a859',
                 border: '2px solid #00a859',
                 padding: '10px 20px',
                 borderRadius: '25px',
@@ -132,11 +101,11 @@ export default function HomeProfessor({ userData, onLogout }) {
 
         {view === "minhasAvaliacoes" && (
           <>
-            <div className="estatisticas" style={{ marginBottom: "20px" }}>
+            <div className="estatisticas" style={{ marginBottom: "20px", textAlign: "center" }}>
               <h3 style={{ color: "#00a859" }}>Estatísticas das Avaliações</h3>
-              <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: "15px" }}>
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "15px" }}>
                 <div style={{ background: "#00a859", color: "white", padding: "15px", borderRadius: "10px", minWidth: "120px" }}>
-                  <div style={{ fontSize: "2rem", fontWeight: "bold" }}>{calcularMedia()}</div>
+                  <div style={{ fontSize: "2rem", fontWeight: "bold" }}>{calcularMedia(avaliacoes)}</div>
                   <div style={{ fontSize: "0.9rem" }}>Média Geral</div>
                 </div>
                 <div style={{ background: "#28a745", color: "white", padding: "15px", borderRadius: "10px", minWidth: "120px" }}>
@@ -148,7 +117,7 @@ export default function HomeProfessor({ userData, onLogout }) {
               <div style={{ marginTop: "20px" }}>
                 <h4 style={{ color: "#00a859" }}>Média por Disciplina:</h4>
                 <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "10px" }}>
-                  {calcularMediaPorDisciplina().map((item, index) => (
+                  {calcularMediaPorDisciplina(avaliacoes).map((item, index) => (
                     <div key={index} style={{ background: "#f8f9fa", padding: "10px 15px", borderRadius: "8px", border: "2px solid #00a859", color: "#333" }}>
                       <strong style={{ color: "#00a859" }}>{item.disciplina}</strong><br/>
                       <span style={{ color: "#333", fontWeight: "600" }}>Média: {item.media} ({item.avaliacoes} avaliações)</span>
@@ -159,7 +128,40 @@ export default function HomeProfessor({ userData, onLogout }) {
             </div>
 
             <div className="avaliacoes-list">
-              {avaliacoes.map((av) => <AvaliacaoCard key={av.id} avaliacao={av} />)}
+              {avaliacoes.length > 0 ? (
+                <div style={{ position: 'relative', maxWidth: '600px', margin: '0 auto' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button 
+                      onClick={() => setCurrentIndex(prev => prev > 0 ? prev - 1 : avaliacoes.length - 1)}
+                      className="btn btn-primary"
+                      style={{ fontSize: '1.2rem', padding: '8px 12px' }}
+                    >
+                      ←
+                    </button>
+                    
+                    <div style={{ flex: 1 }}>
+                      <AvaliacaoCard avaliacao={avaliacoes[currentIndex]} />
+                    </div>
+                    
+                    <button 
+                      onClick={() => setCurrentIndex(prev => prev < avaliacoes.length - 1 ? prev + 1 : 0)}
+                      className="btn btn-primary"
+                      style={{ fontSize: '1.2rem', padding: '8px 12px' }}
+                    >
+                      →
+                    </button>
+                  </div>
+                  
+                  <div style={{ textAlign: 'center', marginTop: '1rem', color: '#666' }}>
+                    {currentIndex + 1} de {avaliacoes.length}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                  <h3>Nenhuma avaliação encontrada</h3>
+                  <p>Você ainda não recebeu nenhuma avaliação.</p>
+                </div>
+              )}
             </div>
 
             <button onClick={() => setView("menu")} className="btn btn-secondary" style={{ marginTop: "20px" }}>
