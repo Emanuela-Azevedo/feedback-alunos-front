@@ -18,8 +18,7 @@ const AppRoutes = () => {
         return <AdminPage userData={userData} onLogout={logout} />;
       default:
         return null;
-    }
-  }
+    }  }
 
   return <Login onLogin={login} />;
 };
