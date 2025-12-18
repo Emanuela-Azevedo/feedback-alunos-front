@@ -1,0 +1,112 @@
+.homeContainer {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.homeContent {
+  background: white;
+  max-width: 1400px;
+  margin: auto;
+  border-radius: 25px;
+  padding: 2.5rem;
+  color: #000000;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo {
+  width: 50px;
+}
+
+.title {
+  color: #00a859;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userName {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.navigation {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.avaliacaoCard {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  color: #000000;
+  position: relative;
+}
+
+.cardActions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.nota {
+  font-weight: bold;
+  color: #00a859;
+  margin: 10px 0;
+}
+
+.carouselContainer {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.carouselNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carouselButton {
+  font-size: 1.2rem;
+  padding: 8px 12px;
+}
+
+.carouselContent {
+  flex: 1;
+}
+
+.carouselCounter {
+  text-align: center;
+  margin-top: 1rem;
+  color: #666;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.backButton {
+  margin-top: 15px;
+}

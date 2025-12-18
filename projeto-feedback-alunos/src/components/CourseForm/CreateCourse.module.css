@@ -1,0 +1,50 @@
+.container {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 15px;
+}
+
+.title {
+  color: #00a859;
+  margin-bottom: 15px;
+}
+
+.form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: end;
+}
+
+.inputName {
+  width: 250px;
+  padding: .5rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+}
+
+.inputCode {
+  width: 100px;
+  padding: .5rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+}
+
+.btnAdd {
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  background: #00a859;
+  color: white;
+}
+
+.btnAdd:hover {
+  filter: brightness(0.9);
+}

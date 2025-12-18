@@ -1,0 +1,8 @@
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content:first baseline;
+    gap: 2%;
+    height: 100%;
+}

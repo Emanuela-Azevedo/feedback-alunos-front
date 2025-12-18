@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import Login from '../components/Login';
-import StudentPage from '../screens/student/StudentPage';
-import TeacherPage from '../screens/teacher/TeacherPage';
-import AdminPage from '../screens/admin/AdminPage';
+import Login from '../pages/auth/login/Login';
+import StudentPage from '../pages/student/StudentPage';
+import TeacherPage from '../pages/teacher/TeacherPage';
+import AdminPage from '../pages/admin/AdminPage';
 
 const AppRoutes = () => {
   const { isLoggedIn, userType, userData, login, logout } = useAuth();

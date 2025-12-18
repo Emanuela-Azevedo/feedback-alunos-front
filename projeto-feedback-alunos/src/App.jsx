@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import './styles/App.css'
+import './styles/global.css'
 import logoIfpb from './assets/logo-ifpb.png'
-import StudentPage from './screens/student/StudentPage'
-import TeacherPage from './screens/teacher/TeacherPage'
-import AdminPage from './screens/admin/AdminPage'
+import StudentPage from './pages/student/StudentPage'
+import TeacherPage from './pages/teacher/TeacherPage'
+import AdminPage from './pages/admin/AdminPage'
 
 function App() {
   const [matricula, setMatricula] = useState('')

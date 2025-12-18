@@ -1,0 +1,54 @@
+.homeContainer {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.homeContent {
+  background: white;
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 3rem;
+  border-radius: 25px;
+  color: #000000;
+}
+
+.tabNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  background: rgba(0, 168, 89, 0.1);
+  border-radius: 15px;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabButton {
+  border: 2px solid #00a859;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-transform: capitalize;
+}
+
+.tabButton.active {
+  background: #00a859;
+  color: white;
+}
+
+.tabButton.inactive {
+  background: transparent;
+  color: #00a859;
+}
+
+.avaliacoesAdmin {
+  display: grid;
+  gap: 1rem;
+}

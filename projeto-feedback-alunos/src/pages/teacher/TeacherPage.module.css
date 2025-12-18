@@ -1,0 +1,131 @@
+.homeContainer {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.homeContent {
+  background: white;
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 3rem;
+  border-radius: 25px;
+  color: #000000;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #00a859;
+}
+
+.logo {
+  width: 60px;
+  height: auto;
+}
+
+.title {
+  color: #00a859;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  background: rgba(0, 168, 89, 0.1);
+  border-radius: 15px;
+}
+
+.navButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userName {
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.estatisticas {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.estatisticasTitle {
+  color: #00a859;
+}
+
+.metricas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.metricaCard {
+  background: #00a859;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  min-width: 120px;
+}
+
+.metricaCard.secondary {
+  background: #28a745;
+}
+
+.metricaValor {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.metricaLabel {
+  font-size: 0.9rem;
+}
+
+.disciplinasContainer {
+  margin-top: 20px;
+}
+
+.disciplinasTitle {
+  color: #00a859;
+}
+
+.disciplinasList {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.disciplinaCard {
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 2px solid #00a859;
+  color: #333;
+}
+
+.disciplinaNome {
+  color: #00a859;
+}
+
+.disciplinaInfo {
+  color: #333;
+  font-weight: 600;
+}

@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; 
+  flex-grow: 1;
+  gap: 1rem; /* Espaçamento entre os componentes */
+  min-height: 100vh; /* Garante altura total da tela */
+  padding: 1rem;
+  position: relative;
+}
+
+.titulo-produtos{
+    color: antiquewhite;  
+}
+
+.button-voltar {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  max-width: 10%;
+}
+
+.button-voltar:hover {
+  background-color: black;
+}
+
+.email-button {
+  display: inline-block;
+  padding: 0.8rem 1.2rem;
+  background-color: #333;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.email-button:hover {
+  background-color: black;
+}

@@ -1,0 +1,58 @@
+.coursesList {
+  display: grid;
+  gap: 1rem;
+}
+
+.courseCard {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  color: #000000;
+}
+
+.courseCard h3 {
+  margin: 0 0 0.5rem 0;
+  color: #00a859;
+}
+
+.courseCard p {
+  margin: 0.25rem 0;
+  color: #333;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btnEdit {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  background: #00a859;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnEdit:hover {
+  filter: brightness(0.9);
+}
+
+.btnDelete {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnDelete:hover {
+  filter: brightness(0.9);
+}
