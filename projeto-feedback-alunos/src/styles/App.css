@@ -106,7 +106,8 @@ body {
 /* CONFIGURAÇÃO DOS CAMPOS DE ENTRADA */
 .form-group input,
 .form-group select,
-.form-group textarea {
+.form-group textarea,
+input, select, textarea {
   width: 100%;
   padding: .9rem;
   border-radius: 10px;
@@ -136,6 +137,20 @@ body {
   0% { box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2); }
   50% { box-shadow: 0 0 0 4px rgba(0, 168, 89, 0.4); }
   100% { box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2); }
+  color: #000000 !important;
+  background-color: #f8f9fa;
+}
+
+.form-group input[type="password"] {
+  background-color: #ffffff;
+  border: 2px solid #333;
+  color: #000;
+}
+
+/* Botão mostrar/ocultar senha do navegador */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  filter: invert(1);
 }
 
 .home-container {
@@ -262,4 +277,19 @@ input[type="password"]::-ms-reveal {
 
 input[type="password"]::-webkit-credentials-auto-fill-button {
   filter: invert(0.3) sepia(1) saturate(5) hue-rotate(175deg);
+.login-button {
+  background: #00a859;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  filter: brightness(0.9);
+}
 }

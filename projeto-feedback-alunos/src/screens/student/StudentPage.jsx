@@ -1,24 +1,15 @@
 import React, { useState } from "react";
-import "./App.css";
-import logoIfpb from "./assets/logo-ifpb.png";
+import logoIfpb from "../../assets/logo-ifpb.png";
+import { generateId } from '../../utils/helpers';
+import { formatDate, formatDateToInput } from '../../utils/formatters';
+import { testProfessors, testDisciplines } from '../../data';
 
-export default function HomeAluno({ userData, onLogout }) {
+export default function StudentPage({ userData, onLogout }) {
   const [view, setView] = useState("menu");
   const [editando, setEditando] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [avaliacoes, setAvaliacoes] = useState([]);
-
-  // PROFESSORES COM PERFIL NO SISTEMA
-  const professoresCadastrados = [
-    { nome: 'Prof. Maria Santos', matricula: '202015030025', tipo: 'professor' }
-  ];
-
-  // DISCIPLINAS DISPONÍVEIS PARA AVALIAÇÃO
-  const disciplinas = [
-    { nome: 'Matemática', codigo: 'MAT001' },
-    { nome: 'Programação', codigo: 'PROG001' }
-  ];
 
   const [form, setForm] = useState({
     tipoAvaliacao: "",
@@ -50,8 +41,8 @@ export default function HomeAluno({ userData, onLogout }) {
     } else {
       const novaAvaliacao = {
         ...form,
-        id: Date.now(),
-        data: new Date().toISOString().split('T')[0],
+        id: generateId(),
+        data: formatDateToInput(),
       };
       setAvaliacoes([novaAvaliacao, ...avaliacoes]);
     }
@@ -107,7 +98,7 @@ export default function HomeAluno({ userData, onLogout }) {
 
       <div className="nota">Nota: {avaliacao.nota}/5</div>
       <p>{avaliacao.comentario}</p>
-      <small style={{color: '#666', display: 'block', marginTop: '10px'}}>Data: {new Date(avaliacao.data).toLocaleDateString('pt-BR')}</small>
+      <small style={{color: '#666', display: 'block', marginTop: '10px'}}>Data: {formatDate(avaliacao.data)}</small>
     </div>
   );
 
@@ -158,7 +149,7 @@ export default function HomeAluno({ userData, onLogout }) {
                   <label>Professor:</label>
                   <select name="professor" value={form.professor} onChange={handleChange} required>
                     <option value="">Selecione o professor</option>
-                    {professoresCadastrados.map((p) => (
+                    {testProfessors.map((p) => (
                       <option key={p.matricula} value={p.nome}>
                         {p.nome}
                       </option>
@@ -172,7 +163,7 @@ export default function HomeAluno({ userData, onLogout }) {
                   <label>Disciplina:</label>
                   <select name="disciplina" value={form.disciplina} onChange={handleChange} required>
                     <option value="">Selecione a disciplina</option>
-                    {disciplinas.map((d) => (
+                    {testDisciplines.map((d) => (
                       <option key={d.codigo} value={d.nome}>
                         {d.nome}
                       </option>
@@ -271,7 +262,6 @@ export default function HomeAluno({ userData, onLogout }) {
           </>
         )}
 
-        {view === "menu" && <h2>Bem-vindo, {userData.nome}</h2>}
       </div>
     </div>
   );
