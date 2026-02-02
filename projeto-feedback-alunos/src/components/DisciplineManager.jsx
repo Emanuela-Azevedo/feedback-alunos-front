@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CreateDiscipline from './DisciplineForm/CreateDiscipline';
-import EditDiscipline from './DisciplineForm/EditDiscipline';
-import ListDisciplines from './DisciplinesList/ListDisciplines';
+import CreateDiscipline from './disciplines/CreateDiscipline';
+import EditDiscipline from './disciplines/EditDiscipline';
+import ListDisciplines from './disciplines/ListDisciplines';
 
 const DisciplineManager = ({ disciplinas, cursos, onAddDisciplina, onUpdateDisciplina, onDeleteDisciplina }) => {
   const [showEdit, setShowEdit] = useState(false);

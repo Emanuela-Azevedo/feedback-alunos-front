@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CreateCourse from './CourseForm/CreateCourse';
-import EditCourse from './CourseForm/EditCourse';
-import ListCourses from './CoursesList/ListCourses';
+import CreateCourse from './courses/CreateCourse';
+import EditCourse from './courses/EditCourse';
+import ListCourses from './courses/ListCourses';
 
 const CourseManager = ({ cursos, onAddCurso, onUpdateCurso, onDeleteCurso }) => {
   const [showEdit, setShowEdit] = useState(false);

@@ -1,8 +1,8 @@
 import React from 'react';
-import CreateUser from './UserForm/CreateUser';
-import EditUser from './UserForm/EditUser';
-import ListUsers from './UsersList/ListUsers';
-import SearchUser from './SearchUser/SearchUser';
+import CreateUser from './users/CreateUser';
+import EditUser from './users/EditUser';
+import ListUsers from './users/ListUsers';
+import SearchUser from './SearchUser';
 
 const UserManager = ({ 
   usuarios, 
