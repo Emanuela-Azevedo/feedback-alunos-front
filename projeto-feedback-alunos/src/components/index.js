@@ -8,8 +8,8 @@ export { default as Button } from './common/Button';
 export { default as UserForm } from './forms/UserForm';
 
 // Components
-export { default as Login } from './Login';
-export { default as SearchUser } from './SearchUser';
+export { default as Login } from './login/Login.jsx';
+export { default as SearchUser } from './users/SearchUser.jsx';
 export { default as UserManager } from './UserManager';
 export { default as CourseManager } from './CourseManager';
 export { default as DisciplineManager } from './DisciplineManager';
