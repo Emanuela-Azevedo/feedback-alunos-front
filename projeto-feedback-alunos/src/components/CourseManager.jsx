@@ -1,46 +1,42 @@
 import React, { useState } from 'react';
 import CreateCourse from './courses/CreateCourse';
-import EditCourse from './courses/EditCourse';
 import ListCourses from './courses/ListCourses';
+import EditCourse from './courses/EditCourse';
 
-const CourseManager = ({ cursos, onAddCurso, onUpdateCurso, onDeleteCurso }) => {
-  const [showEdit, setShowEdit] = useState(false);
-  const [editingCurso, setEditingCurso] = useState(null);
+const CourseManager = ({ cursos, onAddCurso, onDeleteCurso, onUpdateCurso }) => {
+  const [editingCourse, setEditingCourse] = useState(null);
 
   const handleEdit = (curso) => {
-    setEditingCurso(curso);
-    setShowEdit(true);
+    setEditingCourse(curso);
   };
 
-  const handleUpdate = (cursoData) => {
-    onUpdateCurso(editingCurso.id, cursoData);
-    setShowEdit(false);
-    setEditingCurso(null);
+  const handleUpdate = (updatedCurso) => {
+    if (!editingCourse) return;
+    // usa idCurso do DTO
+    onUpdateCurso(editingCourse.idCurso, updatedCurso);
+    setEditingCourse(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCourse(null);
   };
 
   return (
-    <div>
-      {!showEdit && <CreateCourse onSave={onAddCurso} />}
-      
-      {showEdit && (
-        <EditCourse
-          curso={editingCurso}
-          onSave={handleUpdate}
-          onCancel={() => {
-            setShowEdit(false);
-            setEditingCurso(null);
-          }}
+      <div>
+        {!editingCourse && <CreateCourse onSave={onAddCurso} />}
+        {editingCourse && (
+            <EditCourse
+                curso={editingCourse}
+                onUpdate={handleUpdate}
+                onCancel={handleCancelEdit}
+            />
+        )}
+        <ListCourses
+            cursos={cursos}
+            onEdit={handleEdit}
+            onDelete={onDeleteCurso}
         />
-      )}
-      
-      {!showEdit && (
-        <ListCourses 
-          cursos={cursos} 
-          onEdit={handleEdit}
-          onDelete={onDeleteCurso} 
-        />
-      )}
-    </div>
+      </div>
   );
 };
 
