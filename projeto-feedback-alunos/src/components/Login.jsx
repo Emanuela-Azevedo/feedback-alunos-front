@@ -1,29 +1,47 @@
 import { useState } from 'react'
 import logoIfpb from '../assets/logo-ifpb.png'
-import { testUsers } from '../data'
 
 function Login({ onLogin }) {
   const [matricula, setMatricula] = useState('')
   const [senha, setSenha] = useState('')
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    
-    const usuarios = testUsers.reduce((acc, user) => {
-      acc[user.matricula] = { tipo: user.tipo, nome: user.nome, senha: user.senha }
-      return acc
-    }, {})
-    
-    const usuario = usuarios[matricula]
-    
-    if (!usuario) {
-      alert('Usuário não encontrado. Entre em contato com o administrador para criar sua conta.')
-    } else if (usuario.senha !== senha) {
-      alert('Senha incorreta!')
-    } else {
-      onLogin(usuario)
+const handleLogin = async (e) => {
+  e.preventDefault()
+
+  try {
+    const response = await fetch('http://localhost:8081/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        matricula: matricula,
+        senha: senha
+      })
+    })
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        alert('Matrícula ou senha inválidas')
+      } else {
+        alert('Erro ao realizar login')
+      }
+      return
     }
+
+    const data = await response.json()
+
+    const token = data.token
+
+    localStorage.setItem('token', token)
+
+    onLogin("admin")
+
+  } catch (error) {
+    console.error(error)
+    alert('Erro de conexão com o servidor')
   }
+}
 
   return (
     <div className="login-container">
