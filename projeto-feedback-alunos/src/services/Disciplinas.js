@@ -13,7 +13,6 @@ export default function useDisciplinas() {
         },
     };
 
-    // Listar todas as disciplinas
     const listarDisciplinas = async () => {
         try {
             const res = await axios.get(API_URL, config);
@@ -23,7 +22,6 @@ export default function useDisciplinas() {
         }
     };
 
-    // Buscar disciplina por ID
     const buscarDisciplinaPorId = async (id) => {
         try {
             const res = await axios.get(`${API_URL}/${id}`, config);
@@ -33,7 +31,6 @@ export default function useDisciplinas() {
         }
     };
 
-    // Criar uma nova disciplina
     const criarDisciplina = async (data) => {
         try {
             const res = await axios.post(API_URL, data, config);
@@ -43,7 +40,6 @@ export default function useDisciplinas() {
         }
     };
 
-    // Atualizar disciplina existente
     const atualizarDisciplina = async (id, data) => {
         try {
             const res = await axios.put(`${API_URL}/${id}`, data, config);
@@ -53,7 +49,6 @@ export default function useDisciplinas() {
         }
     };
 
-    // Excluir disciplina
     const excluirDisciplina = async (id) => {
         try {
             await axios.delete(`${API_URL}/${id}`, config);

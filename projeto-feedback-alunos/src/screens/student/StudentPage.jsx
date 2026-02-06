@@ -1,49 +1,70 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import logoIfpb from "../../assets/logo-ifpb.png";
-import { formatDate } from "../../utils/formatters";
-import api from "../../services/Authentication";
+import ListAvaliacoes from "../../components/avaliacoes/ListAvaliacoes";
+import CreateAvaliacao from "../../components/avaliacoes/CreateAvaliacao";
+import EditAvaliacao from "../../components/avaliacoes/EditAvaliacao";
+import AvaliacaoDisciplinaAPI from "../../services/AvaliacaoDisciplina";
+import AvaliacaoProfessorAPI from "../../services/AvaliacaoProfessor";
 
-function AvaliacaoCard({ avaliacao }) {
-    return (
-        <div className="avaliacao-card">
-            <h3>
-                {avaliacao.tipoAvaliacao === "professor"
-                    ? `Professor: ${avaliacao.professor}`
-                    : `Disciplina: ${avaliacao.disciplina}`}
-            </h3>
-
-            <div className="nota">Nota: {avaliacao.nota}/5</div>
-            <p>{avaliacao.comentario}</p>
-
-            <small style={{ color: "#666" }}>
-                Data: {formatDate(avaliacao.data)}
-            </small>
-        </div>
-    );
-}
-
-export default function TeacherPage({ userData, onLogout }) {
+export default function StudentPage({ userData, onLogout }) {
     const [avaliacoes, setAvaliacoes] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [showCreate, setShowCreate] = useState(false);
+    const [editando, setEditando] = useState(null); // {id, tipo}
 
+    // Carregar avaliações ao montar
     useEffect(() => {
         async function carregarAvaliacoes() {
             try {
-                const response = await api.get(
-                    `/api/avaliacoes/professor?matricula=${userData.matricula}`
-                );
-                setAvaliacoes(response.data);
-                setCurrentIndex(0);
+                const [disciplinasResponse, professoresResponse] = await Promise.all([
+                    AvaliacaoDisciplinaAPI.listarAvaliacoes(),
+                    AvaliacaoProfessorAPI.listarAvaliacoes(),
+                ]);
+
+                const disciplinas = disciplinasResponse.data.map((a) => ({
+                    ...a,
+                    tipoAvaliacao: "disciplina",
+                }));
+
+                const professores = professoresResponse.data.map((a) => ({
+                    ...a,
+                    tipoAvaliacao: "professor",
+                }));
+
+                setAvaliacoes([...disciplinas, ...professores]);
             } catch (error) {
                 console.error("Erro ao carregar avaliações:", error);
-            } finally {
-                setLoading(false);
             }
         }
-
         carregarAvaliacoes();
-    }, [userData.matricula]);
+    }, []);
+
+    // Excluir avaliação
+    async function handleDelete(avaliacao) {
+        try {
+            if (avaliacao.tipoAvaliacao === "disciplina") {
+                await AvaliacaoDisciplinaAPI.excluirAvaliacao(avaliacao.id);
+            } else {
+                await AvaliacaoProfessorAPI.excluirAvaliacao(avaliacao.id);
+            }
+            setAvaliacoes(avaliacoes.filter((a) => a.id !== avaliacao.id));
+        } catch (error) {
+            console.error("Erro ao excluir avaliação:", error);
+        }
+    }
+
+    // Atualizar lista após edição
+    function handleUpdated(nova) {
+        setAvaliacoes(
+            avaliacoes.map((a) => (a.id === nova.id ? { ...nova, tipoAvaliacao: a.tipoAvaliacao } : a))
+        );
+        setEditando(null);
+    }
+
+    // Atualizar lista após criação
+    function handleCreated(nova) {
+        setAvaliacoes([...avaliacoes, nova]);
+        setShowCreate(false);
+    }
 
     return (
         <div className="home-container">
@@ -62,74 +83,52 @@ export default function TeacherPage({ userData, onLogout }) {
                 >
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                         <img src={logoIfpb} alt="Logo" style={{ width: "50px" }} />
-                        <h1 style={{ color: "#00a859" }}>Portal do Professor</h1>
+                        <h1 style={{ color: "#00a859" }}>Portal do Aluno</h1>
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontWeight: 600 }}>
-              Olá, {userData.nome}
-            </span>
+                        <span style={{ fontWeight: 600 }}>Olá, {userData.nome}</span>
                         <button onClick={onLogout} className="btn btn-danger">
                             Sair
                         </button>
                     </div>
                 </div>
 
-                {/* Conteúdo */}
-                {loading ? (
-                    <p>Carregando avaliações...</p>
-                ) : avaliacoes.length > 0 ? (
-                    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "1rem",
-                            }}
-                        >
-                            <button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                    setCurrentIndex((prev) =>
-                                        prev > 0 ? prev - 1 : avaliacoes.length - 1
-                                    )
-                                }
-                            >
-                                ←
-                            </button>
+                {/* Botão Criar Avaliação alinhado à esquerda */}
+                <div style={{ marginBottom: "2rem", textAlign: "left" }}>
+                    <button
+                        className="btn btn-success"
+                        onClick={() => setShowCreate(!showCreate)}
+                    >
+                        {showCreate ? "Cancelar" : "Criar Avaliação"}
+                    </button>
+                </div>
 
-                            <div style={{ flex: 1 }}>
-                                <AvaliacaoCard avaliacao={avaliacoes[currentIndex]} />
-                            </div>
-
-                            <button
-                                className="btn btn-primary"
-                                onClick={() =>
-                                    setCurrentIndex((prev) =>
-                                        prev < avaliacoes.length - 1 ? prev + 1 : 0
-                                    )
-                                }
-                            >
-                                →
-                            </button>
-                        </div>
-
-                        <div
-                            style={{
-                                textAlign: "center",
-                                marginTop: "1rem",
-                                color: "#666",
-                            }}
-                        >
-                            {currentIndex + 1} de {avaliacoes.length}
-                        </div>
-                    </div>
-                ) : (
-                    <div style={{ textAlign: "center", color: "#666" }}>
-                        <h3>Nenhuma avaliação recebida</h3>
-                        <p>Ainda não há avaliações para você.</p>
-                    </div>
+                {/* Formulário de criação */}
+                {showCreate && (
+                    <CreateAvaliacao
+                        userData={userData}
+                        onCancel={() => setShowCreate(false)}
+                        onCreated={handleCreated}
+                    />
                 )}
+
+                {/* Formulário de edição */}
+                {editando && (
+                    <EditAvaliacao
+                        id={editando.id}
+                        tipo={editando.tipoAvaliacao}
+                        onCancel={() => setEditando(null)}
+                        onUpdated={handleUpdated}
+                    />
+                )}
+
+                {/* Lista de avaliações */}
+                <ListAvaliacoes
+                    avaliacoes={avaliacoes}
+                    onEdit={(av) => setEditando(av)}
+                    onDelete={handleDelete}
+                />
             </div>
         </div>
     );
