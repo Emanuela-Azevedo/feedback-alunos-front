@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import AvaliacoesProfessor from "../../services/AvaliacoesProfessor";
+
 
 export default function TeacherPage() {
     const [avaliacoes, setAvaliacoes] = useState([]);
@@ -11,17 +13,13 @@ export default function TeacherPage() {
             try {
                 setLoading(true);
 
-                const response = await fetch("http://localhost:8080/avaliacoes");
-
-                if (!response.ok) {
-                    throw new Error("Erro ao buscar avaliações");
-                }
-
-                const data = await response.json();
-                setAvaliacoes(data);
+                const response = await AvaliacoesProfessor.listarAvaliacoes();
+                setAvaliacoes(response.data);
                 setCurrentIndex(0);
+
             } catch (err) {
-                setError(err.message);
+                console.error(err);
+                setError("Erro ao buscar avaliações");
             } finally {
                 setLoading(false);
             }
@@ -31,7 +29,7 @@ export default function TeacherPage() {
     }, []);
 
     if (loading) return <p>Carregando avaliações...</p>;
-    if (error) return <p>Erro: {error}</p>;
+    if (error) return <p>{error}</p>;
     if (avaliacoes.length === 0)
         return <p>Não há avaliações para este professor.</p>;
 
@@ -51,12 +49,16 @@ export default function TeacherPage() {
         <div className="teacher-page">
             <h1>Avaliações dos Alunos</h1>
 
-            {/* CARD DA AVALIAÇÃO */}
             <div className="avaliacao-card">
-                <p><strong>Aluno:</strong> {avaliacaoAtual.aluno ?? "Anônimo"}</p>
-                <p><strong>Disciplina:</strong> {avaliacaoAtual.disciplina}</p>
+                <p>
+                    <strong>Aluno:</strong>{" "}
+                    {avaliacaoAtual.anonima ? "Anônimo" : avaliacaoAtual.usuarioId}
+                </p>
+
+                <p><strong>Nota:</strong> {avaliacaoAtual.nota}</p>
+
                 <p><strong>Comentário:</strong></p>
-                <p>{avaliacaoAtual.comentario}</p>
+                <p>{avaliacaoAtual.comentario || "Sem comentário"}</p>
             </div>
 
             <div className="navigation-buttons">
@@ -65,8 +67,8 @@ export default function TeacherPage() {
                 </button>
 
                 <span>
-          {currentIndex + 1} / {avaliacoes.length}
-        </span>
+                    {currentIndex + 1} / {avaliacoes.length}
+                </span>
 
                 <button
                     onClick={proxima}
