@@ -4,33 +4,39 @@ import ListCourses from './courses/ListCourses';
 import EditCourse from './courses/EditCourse';
 
 const CourseManager = ({ cursos, onAddCurso, onDeleteCurso, onUpdateCurso }) => {
-  const [editingCourse, setEditingCourse] = useState(null);
+  const [editingCourseId, setEditingCourseId] = useState(null);
+
+  const cursoEmEdicao = cursos.find(
+      (curso) => curso.idCurso === editingCourseId
+  );
 
   const handleEdit = (curso) => {
-    setEditingCourse(curso);
+    setEditingCourseId(curso.idCurso);
   };
 
   const handleUpdate = (updatedCurso) => {
-    if (!editingCourse) return;
-    // usa idCurso do DTO
-    onUpdateCurso(editingCourse.idCurso, updatedCurso);
-    setEditingCourse(null);
+    if (!editingCourseId) return;
+
+    onUpdateCurso(editingCourseId, updatedCurso);
+    setEditingCourseId(null);
   };
 
   const handleCancelEdit = () => {
-    setEditingCourse(null);
+    setEditingCourseId(null);
   };
 
   return (
       <div>
-        {!editingCourse && <CreateCourse onSave={onAddCurso} />}
-        {editingCourse && (
+        {!cursoEmEdicao && <CreateCourse onSave={onAddCurso} />}
+
+        {cursoEmEdicao && (
             <EditCourse
-                curso={editingCourse}
+                curso={cursoEmEdicao}
                 onUpdate={handleUpdate}
                 onCancel={handleCancelEdit}
             />
         )}
+
         <ListCourses
             cursos={cursos}
             onEdit={handleEdit}

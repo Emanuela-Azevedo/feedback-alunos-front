@@ -14,8 +14,17 @@ const ListUsers = ({ usuarios, onEdit, onDelete }) => {
                     <h3>{usuario.nome}</h3>
                     <p>Matrícula: {usuario.matricula}</p>
                     <p>Perfil: {perfilLabels[usuario.perfil] || usuario.perfil}</p>
-                    {usuario.curso && <p>Curso: {usuario.curso}</p>}
-                    {usuario.especialidade && <p>Especialidade: {usuario.especialidade}</p>}
+
+                    {/* Curso: só mostra se existir e usa nome do DTO */}
+                    {usuario.curso && (
+                        <p>Curso: {usuario.curso.nome} (ID: {usuario.curso.idCurso})</p>
+                    )}
+
+                    {/* Especialidade: só mostra para professores */}
+                    {usuario.especialidade && (
+                        <p>Especialidade: {usuario.especialidade}</p>
+                    )}
+
                     <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
                         <button
                             onClick={() => onEdit(usuario)}

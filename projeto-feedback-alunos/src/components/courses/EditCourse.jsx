@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 
 const EditCourse = ({ curso, onUpdate, onCancel }) => {
-    const [formData, setFormData] = useState({ nome: curso.nome });
+    const [formData, setFormData] = useState({ nome: '' });
+
+    // 🔹 Atualiza formData sempre que a prop curso mudar
+    useLayoutEffect(() => {
+        if (curso) {
+            setFormData({ nome: curso.nome });
+        }
+    }, [curso]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (formData.nome.trim()) {
-            // envia o objeto atualizado para o pai
             onUpdate({ ...curso, nome: formData.nome });
         }
     };

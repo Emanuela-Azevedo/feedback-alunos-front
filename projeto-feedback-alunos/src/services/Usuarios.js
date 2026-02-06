@@ -52,6 +52,9 @@ export default function useUsuarios() {
             if (tipo === "professor") endpoint = `${API_URL}/professor`;
             if (tipo === "admin") endpoint = `${API_URL}/admin`;
 
+            // 🔹 Loga o payload antes de enviar
+            console.log("Payload enviado para backend:", data);
+
             const res = await axios.post(endpoint, data, getConfig());
             return normalizarUsuario(res.data);
         } catch (err) {
@@ -77,6 +80,16 @@ export default function useUsuarios() {
         }
     };
 
+    // 🔥 Novo método: listar professores por curso
+    const listarProfessoresPorCurso = async (cursoId) => {
+        try {
+            const res = await axios.get(`${API_URL}/professores/curso/${cursoId}`, getConfig());
+            return (res.data || []).map(normalizarUsuario);
+        } catch (err) {
+            throw new Error(err.response?.data || "Erro ao listar professores por curso");
+        }
+    };
+
     return {
         listarUsuarios,
         buscarPorId,
@@ -84,5 +97,6 @@ export default function useUsuarios() {
         criarUsuario,
         atualizarUsuario,
         excluirUsuario,
+        listarProfessoresPorCurso,
     };
 }

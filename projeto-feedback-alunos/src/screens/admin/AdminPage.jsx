@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Header from '../../components/layout/Header';
-import UserManager from '../../components/UserManager';
-import CourseManager from '../../components/CourseManager';
-import DisciplineManager from '../../components/DisciplineManager';
-import { confirmDelete } from '../../utils/helpers';
-import { filterUsersByMatricula } from '../../utils/filters';
-import useUsuarios from "../../services/usuarios";
-import useCursos from "../../services/cursos";
+import Header from "../../components/layout/Header";
+import UserManager from "../../components/UserManager";
+import CourseManager from "../../components/CourseManager";
+import DisciplineManager from "../../components/DisciplineManager";
+import { confirmDelete } from "../../utils/helpers";
+import { filterUsersByMatricula } from "../../utils/filters";
+import useUsuarios from "../../services/Usuarios.js";
+import useCursos from "../../services/Cursos.js";
 import useDisciplinas from "../../services/Disciplinas.js";
 
 export default function AdminPage({ userData, onLogout }) {
@@ -15,8 +15,8 @@ export default function AdminPage({ userData, onLogout }) {
   const [cursos, setCursos] = useState([]);
   const [disciplinas, setDisciplinas] = useState([]);
 
-  const [activeTab, setActiveTab] = useState('usuarios');
-  const [searchMatricula, setSearchMatricula] = useState('');
+  const [activeTab, setActiveTab] = useState("usuarios");
+  const [searchMatricula, setSearchMatricula] = useState("");
 
   const [showCreateUser, setShowCreateUser] = useState(false);
   const [showEditUser, setShowEditUser] = useState(false);
@@ -24,7 +24,7 @@ export default function AdminPage({ userData, onLogout }) {
 
   const { listarUsuarios, criarUsuario, atualizarUsuario, excluirUsuario } = useUsuarios();
   const { listarCursos, criarCurso, excluirCurso, atualizarCurso } = useCursos();
-  const { listarDisciplinas, criarDisciplina, excluirDisciplina } = useDisciplinas();
+  const { listarDisciplinas, criarDisciplina, excluirDisciplina, atualizarDisciplina } = useDisciplinas();
 
   // --- Carregar dados do backend ---
   useEffect(() => {
@@ -53,25 +53,27 @@ export default function AdminPage({ userData, onLogout }) {
   const handleCreateUser = async (userData) => {
     try {
       const res = await criarUsuario(userData);
-      setUsuarios(prev => [...prev, res].filter(Boolean));
-      alert('Usuário criado com sucesso!');
+      setUsuarios((prev) => [...prev, res].filter(Boolean));
+      alert("Usuário criado com sucesso!");
       setShowCreateUser(false);
     } catch (err) {
       console.error(err);
-      alert('Erro ao criar usuário');
+      alert("Erro ao criar usuário");
     }
   };
 
   const handleUpdateUser = async (userData) => {
     try {
       const res = await atualizarUsuario(editingUser.idUsuario, userData);
-      setUsuarios(prev => prev.map(u => u.idUsuario === editingUser.idUsuario ? res || u : u));
-      alert('Usuário atualizado com sucesso!');
+      setUsuarios((prev) =>
+          prev.map((u) => (u.idUsuario === editingUser.idUsuario ? res || u : u))
+      );
+      alert("Usuário atualizado com sucesso!");
       setEditingUser(null);
       setShowEditUser(false);
     } catch (err) {
       console.error(err);
-      alert('Erro ao atualizar usuário');
+      alert("Erro ao atualizar usuário");
     }
   };
 
@@ -81,13 +83,13 @@ export default function AdminPage({ userData, onLogout }) {
   };
 
   const handleDeleteUser = async (idUsuario) => {
-    if (!confirmDelete('Tem certeza que deseja excluir este usuário?')) return;
+    if (!confirmDelete("Tem certeza que deseja excluir este usuário?")) return;
     try {
       await excluirUsuario(idUsuario);
-      setUsuarios(prev => prev.filter(u => u.idUsuario !== idUsuario));
+      setUsuarios((prev) => prev.filter((u) => u.idUsuario !== idUsuario));
     } catch (err) {
       console.error(err);
-      alert('Erro ao excluir usuário');
+      alert("Erro ao excluir usuário");
     }
   };
 
@@ -95,34 +97,36 @@ export default function AdminPage({ userData, onLogout }) {
   const handleAddCurso = async (cursoData) => {
     try {
       const res = await criarCurso(cursoData);
-      setCursos(prev => [...prev, res].filter(Boolean));
-      alert('Curso adicionado com sucesso!');
+      setCursos((prev) => [...prev, res].filter(Boolean));
+      alert("Curso adicionado com sucesso!");
     } catch (err) {
       console.error(err);
-      alert(err.message || 'Erro ao adicionar curso');
+      alert(err.message || "Erro ao adicionar curso");
     }
   };
 
   const handleUpdateCurso = async (idCurso, cursoData) => {
     try {
       const res = await atualizarCurso(idCurso, cursoData);
-      setCursos(prev => prev.map(c => c.idCurso === idCurso ? res || c : c));
-      alert('Curso atualizado com sucesso!');
+      setCursos((prev) =>
+          prev.map((c) => (c.idCurso === idCurso ? res || c : c))
+      );
+      alert("Curso atualizado com sucesso!");
     } catch (err) {
       console.error(err);
-      alert(err.message || 'Erro ao atualizar curso');
+      alert(err.message || "Erro ao atualizar curso");
     }
   };
 
   const handleDeleteCurso = async (idCurso) => {
-    if (!confirmDelete('Tem certeza que deseja excluir este curso?')) return;
+    if (!confirmDelete("Tem certeza que deseja excluir este curso?")) return;
     try {
       await excluirCurso(idCurso);
-      setCursos(prev => prev.filter(c => c.idCurso !== idCurso));
-      alert('Curso excluído com sucesso!');
+      setCursos((prev) => prev.filter((c) => c.idCurso !== idCurso));
+      alert("Curso excluído com sucesso!");
     } catch (err) {
       console.error(err);
-      alert(err.message || 'Erro ao excluir curso');
+      alert(err.message || "Erro ao excluir curso");
     }
   };
 
@@ -130,34 +134,51 @@ export default function AdminPage({ userData, onLogout }) {
   const handleAddDisciplina = async (disciplinaData) => {
     try {
       const res = await criarDisciplina(disciplinaData);
-      setDisciplinas(prev => [...prev, res].filter(Boolean));
-      alert('Disciplina adicionada com sucesso!');
+      setDisciplinas((prev) => [...prev, res].filter(Boolean));
+      alert("Disciplina adicionada com sucesso!");
     } catch (err) {
       console.error(err);
-      alert('Erro ao adicionar disciplina');
+      alert("Erro ao adicionar disciplina");
+    }
+  };
+
+  const handleUpdateDisciplina = async (idDisciplina, disciplinaData) => {
+    try {
+      const res = await atualizarDisciplina(idDisciplina, disciplinaData);
+      setDisciplinas((prev) =>
+          prev.map((d) => (d.idDisciplina === idDisciplina ? res || d : d))
+      );
+      alert("Disciplina atualizada com sucesso!");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao atualizar disciplina");
     }
   };
 
   const handleDeleteDisciplina = async (idDisciplina) => {
-    if (!confirmDelete('Tem certeza que deseja excluir esta disciplina?')) return;
+    if (!confirmDelete("Tem certeza que deseja excluir esta disciplina?")) return;
     try {
       await excluirDisciplina(idDisciplina);
-      setDisciplinas(prev => prev.filter(d => d.idDisciplina !== idDisciplina));
+      setDisciplinas((prev) => prev.filter((d) => d.idDisciplina !== idDisciplina));
+      alert("Disciplina excluída com sucesso!");
     } catch (err) {
       console.error(err);
-      alert('Erro ao excluir disciplina');
+      alert("Erro ao excluir disciplina");
     }
   };
 
   // --- Handlers Avaliações ---
   const handleDeleteAvaliacao = (id) => {
-    if (!confirmDelete('Tem certeza que deseja excluir esta avaliação?')) return;
-    setAvaliacoes(prev => prev.filter(av => av.id !== id));
+    if (!confirmDelete("Tem certeza que deseja excluir esta avaliação?")) return;
+    setAvaliacoes((prev) => prev.filter((av) => av.id !== id));
   };
 
   return (
       <div className="home-container">
-        <div className="home-content" style={{ maxWidth: '1400px', margin: '3rem auto', padding: '3rem' }}>
+        <div
+            className="home-content"
+            style={{ maxWidth: "1400px", margin: "3rem auto", padding: "3rem" }}
+        >
           <Header
               title="Painel Administrativo"
               userName={userData?.nome || userData?.matricula || "Usuário"}
@@ -165,31 +186,33 @@ export default function AdminPage({ userData, onLogout }) {
           />
 
           {/* Abas */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '3rem',
-            padding: '1rem',
-            background: 'rgba(0, 168, 89, 0.1)',
-            borderRadius: '15px'
-          }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {['usuarios', 'avaliacoes', 'cursos', 'disciplinas'].map(tab => (
+          <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "3rem",
+                padding: "1rem",
+                background: "rgba(0, 168, 89, 0.1)",
+                borderRadius: "15px",
+              }}
+          >
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              {["usuarios", "avaliacoes", "cursos", "disciplinas"].map((tab) => (
                   <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
                       style={{
-                        background: activeTab === tab ? '#00a859' : 'transparent',
-                        color: activeTab === tab ? 'white' : '#00a859',
-                        border: '2px solid #00a859',
-                        padding: '8px 16px',
-                        borderRadius: '20px',
-                        cursor: 'pointer',
-                        fontWeight: '600',
-                        fontSize: '0.9rem',
-                        transition: 'all 0.3s ease',
-                        textTransform: 'capitalize'
+                        background: activeTab === tab ? "#00a859" : "transparent",
+                        color: activeTab === tab ? "white" : "#00a859",
+                        border: "2px solid #00a859",
+                        padding: "8px 16px",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        fontSize: "0.9rem",
+                        transition: "all 0.3s ease",
+                        textTransform: "capitalize",
                       }}
                   >
                     {tab}
@@ -199,7 +222,7 @@ export default function AdminPage({ userData, onLogout }) {
           </div>
 
           {/* Conteúdo das abas */}
-          {activeTab === 'usuarios' && (
+          {activeTab === "usuarios" && (
               <UserManager
                   usuarios={filteredUsuarios}
                   searchValue={searchMatricula}
@@ -213,22 +236,30 @@ export default function AdminPage({ userData, onLogout }) {
                   onEditUser={handleEditUser}
                   onDeleteUser={handleDeleteUser}
                   onCancelCreate={() => setShowCreateUser(false)}
-                  onCancelEdit={() => { setShowEditUser(false); setEditingUser(null); }}
+                  onCancelEdit={() => {
+                    setShowEditUser(false);
+                    setEditingUser(null);
+                  }}
               />
           )}
-
-          {activeTab === 'avaliacoes' && (
+          {activeTab === "avaliacoes" && (
               <div className="avaliacoes-admin">
-                {(avaliacoes || []).map(avaliacao => (
+                {(avaliacoes || []).map((avaliacao) => (
                     <div key={avaliacao.id} className="avaliacao-card">
-                      <h3>{avaliacao.disciplina} - {avaliacao.curso}</h3>
+                      <h3>
+                        {avaliacao.disciplina} - {avaliacao.curso}
+                      </h3>
                       <p>Nota: {avaliacao.nota}/5</p>
                       <p>Comentário: {avaliacao.comentario}</p>
-                      <p>{avaliacao.anonima ? 'Avaliação anônima' : `Matrícula: ${avaliacao.matricula}`}</p>
+                      <p>
+                        {avaliacao.anonima
+                            ? "Avaliação anônima"
+                            : `Matrícula: ${avaliacao.matricula}`}
+                      </p>
                       <button
                           onClick={() => handleDeleteAvaliacao(avaliacao.id)}
                           className="btn btn-danger"
-                          style={{ marginTop: '10px' }}
+                          style={{ marginTop: "10px" }}
                       >
                         Excluir
                       </button>
@@ -237,20 +268,21 @@ export default function AdminPage({ userData, onLogout }) {
               </div>
           )}
 
-          {activeTab === 'cursos' && (
+          {activeTab === "cursos" && (
               <CourseManager
                   cursos={cursos || []}
                   onAddCurso={handleAddCurso}
                   onDeleteCurso={handleDeleteCurso}
-                  onUpdateCurso={handleUpdateCurso}   // agora incluído
+                  onUpdateCurso={handleUpdateCurso}
               />
           )}
 
-          {activeTab === 'disciplinas' && (
+          {activeTab === "disciplinas" && (
               <DisciplineManager
                   disciplinas={disciplinas || []}
                   cursos={cursos || []}
                   onAddDisciplina={handleAddDisciplina}
+                  onUpdateDisciplina={handleUpdateDisciplina}
                   onDeleteDisciplina={handleDeleteDisciplina}
               />
           )}

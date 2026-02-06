@@ -23,7 +23,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
         setFormData({
           nome: user.nome || '',
           matricula: user.matricula || '',
-          curso: user.curso || '',
+          curso: user.cursoId || '', // 🔹 agora usamos cursoId
           senha: '',
           confirmPassword: ''
         });
@@ -63,10 +63,12 @@ const EditUser = ({ user, onSave, onCancel }) => {
     if (Object.keys(newErrors).length === 0) {
       const payload = {
         nome: formData.nome || undefined,
-        matricula: formData.matricula, // não editável, mas enviado
-        curso: formData.curso || undefined,
-        senha: formData.senha || undefined // só envia se foi alterada
+        matricula: formData.matricula,
+        cursoId: formData.curso ? Number(formData.curso) : undefined, // ✅ campo correto
+        senha: formData.senha || undefined
       };
+
+      console.log("Payload enviado para backend (edit):", payload); // debug
 
       onSave && onSave(payload);
     }

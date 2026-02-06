@@ -1,48 +1,95 @@
-import React, { useState } from 'react';
-import CreateDiscipline from './disciplines/CreateDiscipline';
-import EditDiscipline from './disciplines/EditDiscipline';
-import ListDisciplines from './disciplines/ListDisciplines';
+import React, { useState, useEffect } from "react";
+import CreateDiscipline from "./disciplines/CreateDiscipline";
+import EditDiscipline from "./disciplines/EditDiscipline";
+import ListDisciplines from "./disciplines/ListDisciplines";
+import useUsuarios from "../services/usuarios"; // hook para buscar professores
 
-const DisciplineManager = ({ disciplinas, cursos, onAddDisciplina, onUpdateDisciplina, onDeleteDisciplina }) => {
-  const [showEdit, setShowEdit] = useState(false);
-  const [editingDisciplina, setEditingDisciplina] = useState(null);
+export default function DisciplineManager({
+                                              disciplinas = [],
+                                              cursos = [],
+                                              onAddDisciplina,
+                                              onUpdateDisciplina,
+                                              onDeleteDisciplina
+                                          }) {
+    const [showCreate, setShowCreate] = useState(false);
+    const [editingDisciplina, setEditingDisciplina] = useState(null);
+    const [professores, setProfessores] = useState([]);
 
-  const handleEdit = (disciplina) => {
-    setEditingDisciplina(disciplina);
-    setShowEdit(true);
-  };
+    const { listarUsuarios } = useUsuarios();
 
-  const handleUpdate = (disciplinaData) => {
-    onUpdateDisciplina(editingDisciplina.id, disciplinaData);
-    setShowEdit(false);
-    setEditingDisciplina(null);
-  };
+    // 🔹 Carregar todos os professores uma vez
+    useEffect(() => {
+        listarUsuarios()
+            .then((data) => {
+                const onlyProfessores = data.filter((u) => u.perfil?.nomePerfil === "ROLE_PROFESSOR");
+                setProfessores(onlyProfessores);
+            })
+            .catch((err) => console.error("Erro ao carregar professores:", err));
+    }, []);
 
-  return (
-    <div>
-      {!showEdit && <CreateDiscipline cursos={cursos} onSave={onAddDisciplina} />}
-      
-      {showEdit && (
-        <EditDiscipline
-          disciplina={editingDisciplina}
-          cursos={cursos}
-          onSave={handleUpdate}
-          onCancel={() => {
-            setShowEdit(false);
-            setEditingDisciplina(null);
-          }}
-        />
-      )}
-      
-      {!showEdit && (
-        <ListDisciplines 
-          disciplinas={disciplinas} 
-          onEdit={handleEdit}
-          onDelete={onDeleteDisciplina} 
-        />
-      )}
-    </div>
-  );
-};
+    // 🔹 Criar disciplina
+    const handleCreate = async (disciplinaData) => {
+        await onAddDisciplina(disciplinaData);
+        setShowCreate(false);
+    };
 
-export default DisciplineManager;
+    // 🔹 Editar disciplina
+    const handleEdit = (disciplina) => {
+        setEditingDisciplina(disciplina);
+    };
+
+    // 🔹 Atualizar disciplina
+    const handleUpdate = async (disciplinaData) => {
+        await onUpdateDisciplina(editingDisciplina.idDisciplina, disciplinaData);
+        setEditingDisciplina(null);
+    };
+
+    return (
+        <div>
+            <h2 style={{ color: "#00a859", marginBottom: "1rem" }}>
+                Gerenciar Disciplinas
+            </h2>
+
+            {/* Botão para criar disciplina */}
+            {!showCreate && !editingDisciplina && (
+                <button
+                    onClick={() => setShowCreate(true)}
+                    className="btn btn-primary"
+                    style={{ marginBottom: "1rem" }}
+                >
+                    Nova Disciplina
+                </button>
+            )}
+
+            {/* Formulário de criação */}
+            {showCreate && (
+                <CreateDiscipline
+                    onSave={handleCreate}
+                    onCancel={() => setShowCreate(false)}
+                />
+            )}
+
+            {/* Formulário de edição */}
+            {editingDisciplina && (
+                <EditDiscipline
+                    disciplina={editingDisciplina}
+                    cursos={cursos}
+                    professores={professores}
+                    onSave={handleUpdate}
+                    onCancel={() => setEditingDisciplina(null)}
+                />
+            )}
+
+            {/* Lista de disciplinas */}
+            {!showCreate && !editingDisciplina && (
+                <ListDisciplines
+                    disciplinas={disciplinas}
+                    cursos={cursos}
+                    professores={professores}
+                    onEdit={handleEdit}
+                    onDelete={onDeleteDisciplina}
+                />
+            )}
+        </div>
+    );
+}

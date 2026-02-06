@@ -9,7 +9,7 @@ const CreateUser = ({ onSave, onCancel }) => {
     senha: '',
     confirmPassword: '',
     perfil: 'ROLE_ALUNO',
-    curso: '',
+    curso: '', // aqui continua como curso para o select
     especialidade: ''
   });
 
@@ -51,9 +51,12 @@ const CreateUser = ({ onSave, onCancel }) => {
         matricula: formData.matricula,
         senha: formData.senha,
         perfil: formData.perfil,
-        curso: formData.perfil !== 'ROLE_ADMIN' ? formData.curso : undefined,
+        cursoId: formData.perfil !== 'ROLE_ADMIN' ? Number(formData.curso) : undefined, // 🔹 campo correto
         especialidade: formData.perfil === 'ROLE_PROFESSOR' ? formData.especialidade : undefined
       };
+
+      console.log("Payload enviado para backend:", payload); // debug
+
       onSave && onSave(payload);
     }
   };

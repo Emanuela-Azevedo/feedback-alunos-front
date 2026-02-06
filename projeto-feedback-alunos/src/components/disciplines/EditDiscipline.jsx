@@ -1,74 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from "react";
+import useUsuarios from "../../services/usuarios";
+import useCursos from "../../services/cursos";
 
-const EditDiscipline = ({ disciplina, cursos, onSave, onCancel }) => {
+const EditDiscipline = ({ disciplina, cursos = [], onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    nome: '',
-    codigo: '',
-    curso: ''
+    nome: "",
+    cursoId: "",
+    professorId: ""
   });
+  const [professores, setProfessores] = useState([]);
 
+  const { listarProfessoresPorCurso } = useUsuarios();
+  const { listarCursos } = useCursos();
+
+  // 🔹 Inicializa formData quando disciplina muda
+  useLayoutEffect(() => {
+    if (disciplina) {
+      setFormData({
+        nome: disciplina.nome || "",
+        cursoId: Number(disciplina.cursoId) || "",
+        professorId: Number(disciplina.professorId) || ""
+      });
+    }
+  }, [disciplina]);
+
+  // 🔹 Carregar professores quando cursoId muda
   useEffect(() => {
-    if (!disciplina) {
+    if (!formData.cursoId) {
+      setProfessores([]);
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFormData({
-      nome: disciplina.nome || '',
-      codigo: disciplina.codigo || '',
-      curso: disciplina.curso || ''
-    });
-  }, [disciplina]);
+    listarProfessoresPorCurso(formData.cursoId)
+        .then((data) => {
+          console.log("Professores recebidos do backend:", data);
+          setProfessores(data);
+        })
+        .catch((err) => console.error("Erro ao carregar professores:", err));
+  }, [formData.cursoId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.nome && formData.codigo && formData.curso) {
-      onSave(formData);
-    }
+    const payload = {
+      idDisciplina: disciplina.idDisciplina,
+      nome: formData.nome,
+      cursoId: Number(formData.cursoId),
+      professorId: Number(formData.professorId)
+    };
+    console.log("Payload enviado ao backend (edit):", payload);
+    onSave(payload);
   };
 
   return (
-      <div style={{background: 'rgba(255,255,255,0.95)', padding: '2rem', borderRadius: '15px', marginBottom: '2rem'}}>
-        <h2 style={{color: '#00a859', marginBottom: '1.5rem', textAlign: 'center'}}>Editar Disciplina</h2>
+      <div style={{ background: "rgba(255,255,255,0.95)", padding: "2rem", borderRadius: "15px", marginBottom: "2rem" }}>
+        <h2 style={{ color: "#00a859", marginBottom: "1.5rem", textAlign: "center" }}>
+          Editar Disciplina
+        </h2>
 
         <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
+          {/* Nome da disciplina (não editável) */}
+          <div className="form-group" style={{ marginBottom: "1rem" }}>
             <label>Nome da Disciplina:</label>
-            <input
-                type="text"
-                value={formData.nome}
-                onChange={(e) => setFormData({...formData, nome: e.target.value})}
-                placeholder="Nome da disciplina"
-                required
-            />
+            <input type="text" value={formData.nome} disabled />
           </div>
 
-          <div className="form-group">
-            <label>Código:</label>
-            <input
-                type="text"
-                value={formData.codigo}
-                onChange={(e) => setFormData({...formData, codigo: e.target.value})}
-                placeholder="Código"
-                required
-            />
-          </div>
-
-          <div className="form-group">
+          {/* Curso (não editável) */}
+          <div className="form-group" style={{ marginBottom: "1rem" }}>
             <label>Curso:</label>
-            <select
-                value={formData.curso}
-                onChange={(e) => setFormData({...formData, curso: e.target.value})}
-                required
-            >
-              <option value="">Selecione o curso</option>
-              {cursos.map(curso => (
-                  <option key={curso.id} value={curso.nome}>{curso.nome}</option>
+            <select value={formData.cursoId} disabled>
+              {cursos.map((curso) => (
+                  <option key={curso.idCurso} value={curso.idCurso}>
+                    {curso.nome}
+                  </option>
               ))}
             </select>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button type="submit" className="btn btn-primary">Atualizar Disciplina</button>
+          {/* Professores do curso */}
+          <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+            <label>Professor Responsável:</label>
+            <select
+                value={formData.professorId}
+                onChange={(e) => setFormData({ ...formData, professorId: Number(e.target.value) })}
+                required
+                disabled={professores.length === 0}
+            >
+              <option value="">Selecione o professor</option>
+              {professores.map((prof) => (
+                  <option key={prof.idUsuario} value={prof.idUsuario}>
+                    {prof.nome}
+                  </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button type="submit" className="btn btn-primary">Atualizar</button>
             <button type="button" onClick={onCancel} className="btn btn-secondary">Cancelar</button>
           </div>
         </form>
