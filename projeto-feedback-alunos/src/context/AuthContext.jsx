@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
         userData: null,
     });
 
-    const [loading, setLoading] = useState(true); // <-- Novo
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -24,14 +24,15 @@ export const AuthProvider = ({ children }) => {
         try {
             const decoded = jwtDecode(token);
             const role = decoded.roles?.[0] || decoded.authorities?.[0] || null;
-            const userType =
-                role?.includes("ALUNO")
-                    ? "aluno"
-                    : role?.includes("PROFESSOR")
-                        ? "professor"
-                        : role?.includes("ADMIN")
-                            ? "admin"
-                            : null;
+
+            let userType = null;
+            if (role === "ROLE_ALUNO") {
+                userType = "student";
+            } else if (role === "ROLE_PROFESSOR") {
+                userType = "teacher";
+            } else if (role === "ROLE_ADMIN") {
+                userType = "admin";
+            }
 
             if (!userType) {
                 localStorage.removeItem("token");
@@ -43,7 +44,11 @@ export const AuthProvider = ({ children }) => {
                 token,
                 isLoggedIn: true,
                 userType,
-                userData: { matricula: decoded.sub },
+                userData: {
+                    matricula: decoded.sub,
+                    role,
+                    nome: decoded.nome || "", // se o token tiver nome
+                },
             });
         } catch (err) {
             console.error("AuthContext: erro ao decodificar token", err);
@@ -61,22 +66,37 @@ export const AuthProvider = ({ children }) => {
 
             const decoded = jwtDecode(token);
             const role = decoded.roles?.[0] || decoded.authorities?.[0] || null;
-            const userType =
-                role?.includes("ALUNO")
-                    ? "aluno"
-                    : role?.includes("PROFESSOR")
-                        ? "professor"
-                        : role?.includes("ADMIN")
-                            ? "admin"
-                            : null;
+
+            let userType = null;
+            if (role === "ROLE_ALUNO") {
+                userType = "student";
+            } else if (role === "ROLE_PROFESSOR") {
+                userType = "teacher";
+            } else if (role === "ROLE_ADMIN") {
+                userType = "admin";
+            }
 
             if (!userType) {
                 localStorage.removeItem("token");
-                setAuthState({ token: null, isLoggedIn: false, userType: null, userData: null });
+                setAuthState({
+                    token: null,
+                    isLoggedIn: false,
+                    userType: null,
+                    userData: null,
+                });
                 return false;
             }
 
-            setAuthState({ token, isLoggedIn: true, userType, userData: { matricula: decoded.sub } });
+            setAuthState({
+                token,
+                isLoggedIn: true,
+                userType,
+                userData: {
+                    matricula: decoded.sub,
+                    role,
+                    nome: decoded.nome || "",
+                },
+            });
             return true;
         } catch (err) {
             console.error("AuthContext: erro no login", err);
@@ -86,7 +106,12 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        setAuthState({ token: null, isLoggedIn: false, userType: null, userData: null });
+        setAuthState({
+            token: null,
+            isLoggedIn: false,
+            userType: null,
+            userData: null,
+        });
     };
 
     const getAuthHeader = () => ({
@@ -94,7 +119,9 @@ export const AuthProvider = ({ children }) => {
     });
 
     return (
-        <AuthContext.Provider value={{ ...authState, login, logout, getAuthHeader, loading }}>
+        <AuthContext.Provider
+            value={{ ...authState, login, logout, getAuthHeader, loading }}
+        >
             {children}
         </AuthContext.Provider>
     );
