@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import AvaliacaoDisciplinaAPI from "../../services/AvaliacaoDisciplina";
-import AvaliacaoProfessorAPI from "../../services/AvaliacaoProfessor";
+import AvaliacaoDisciplinaAPI from "../../services/AvaliaoesDisciplina.js";
+import AvaliacaoProfessorAPI from "../../services/AvaliacoesProfessor.js";
 import useDisciplinas from "../../services/Disciplinas";
 import useUsuarios from "../../services/Usuarios";
-import useCursos from "../../services/Cursos"; // ⚠️ com C maiúsculo
+import useCursos from "../../services/Cursos";
 
 export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
     const { listarDisciplinas } = useDisciplinas();
@@ -13,6 +13,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
     const [tipo, setTipo] = useState("disciplina");
     const [nota, setNota] = useState(5);
     const [comentario, setComentario] = useState("");
+    const [anonima, setAnonima] = useState(false);
     const [cursos, setCursos] = useState([]);
     const [disciplinas, setDisciplinas] = useState([]);
     const [professores, setProfessores] = useState([]);
@@ -21,7 +22,6 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
     const [selectedProfessor, setSelectedProfessor] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // 🔹 Carregar cursos e disciplinas apenas uma vez
     useEffect(() => {
         async function carregarDados() {
             try {
@@ -30,11 +30,11 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 setCursos(cursosResp);
                 setDisciplinas(disciplinasResp);
             } catch (error) {
-                console.error("Erro ao carregar dados:", error);
+                console.error("CreateAvaliacao - Erro ao carregar dados:", error);
             }
         }
         carregarDados();
-    }, []); // sem dependências → evita loop
+    }, []);
 
     async function handleCursoChange(idCurso) {
         setSelectedCurso(idCurso);
@@ -44,7 +44,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 const professoresResp = await listarProfessoresPorCurso(idCurso);
                 setProfessores(professoresResp);
             } catch (error) {
-                console.error("Erro ao carregar professores:", error);
+                console.error("CreateAvaliacao - Erro ao carregar professores:", error);
             }
         } else {
             setProfessores([]);
@@ -59,26 +59,34 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
             let payload;
 
             if (tipo === "disciplina") {
-                // 🔹 Payload conforme AvaliacaoDisciplinaCreateDTO
-                payload = {
-                    usuarioId: userData.idUsuario,       // precisa ser o ID do usuário
-                    disciplinaId: selectedDisciplina,    // precisa ser o ID da disciplina
-                    nota: Number(nota),                  // garantir que seja número
-                    comentario: comentario.trim(),       // não pode ser vazio
-                    anonima: false
-                };
+                if (!selectedDisciplina) {
+                    alert("Selecione uma disciplina!");
+                    setLoading(false);
+                    return;
+                }
 
-                await AvaliacaoDisciplinaAPI.criarAvaliacao(payload);
-            } else {
-                // 🔹 Payload para professor (ajuste conforme DTO de professor)
                 payload = {
-                    usuarioId: userData.idUsuario,
-                    professorId: selectedProfessor,
+                    usuarioId: userData.usuarioId,
+                    disciplinaId: Number(selectedDisciplina),
                     nota: Number(nota),
                     comentario: comentario.trim(),
-                    anonima: false
+                    anonima: anonima,
                 };
+                await AvaliacaoDisciplinaAPI.criarAvaliacao(payload);
+            } else {
+                if (!selectedProfessor) {
+                    alert("Selecione um professor!");
+                    setLoading(false);
+                    return;
+                }
 
+                payload = {
+                    usuarioId: userData.usuarioId,
+                    professorId: Number(selectedProfessor),
+                    nota: Number(nota),
+                    comentario: comentario.trim(),
+                    anonima: anonima,
+                };
                 await AvaliacaoProfessorAPI.criarAvaliacao(payload);
             }
 
@@ -91,9 +99,11 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
             setSelectedCurso("");
             setSelectedDisciplina("");
             setSelectedProfessor("");
+            setAnonima(false);
+
             if (onCancel) onCancel();
         } catch (error) {
-            console.error("Erro ao criar avaliação:", error);
+            console.error("CreateAvaliacao - Erro ao criar avaliação:", error);
         } finally {
             setLoading(false);
         }
@@ -103,6 +113,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
         <form onSubmit={handleSubmit} style={{ maxWidth: "600px", margin: "0 auto" }}>
             <h3>Criar Nova Avaliação</h3>
 
+            {/* Tipo da avaliação */}
             <div className="form-group">
                 <label>Tipo:</label>
                 <select value={tipo} onChange={(e) => setTipo(e.target.value)} className="form-control">
@@ -111,6 +122,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 </select>
             </div>
 
+            {/* Select de disciplina */}
             {tipo === "disciplina" && (
                 <div className="form-group">
                     <label>Disciplina:</label>
@@ -129,6 +141,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 </div>
             )}
 
+            {/* Select de curso e professor */}
             {tipo === "professor" && (
                 <>
                     <div className="form-group">
@@ -166,6 +179,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 </>
             )}
 
+            {/* Nota */}
             <div className="form-group">
                 <label>Nota (0 a 5):</label>
                 <input
@@ -178,6 +192,7 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 />
             </div>
 
+            {/* Comentário */}
             <div className="form-group">
                 <label>Comentário:</label>
                 <textarea
@@ -188,6 +203,19 @@ export default function CreateAvaliacao({ userData, onCancel, onCreated }) {
                 />
             </div>
 
+            {/* Avaliação anônima */}
+            <div className="form-group" style={{ marginTop: "1rem" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    <input
+                        type="checkbox"
+                        checked={anonima}
+                        onChange={(e) => setAnonima(e.target.checked)}
+                    />
+                    <span>Anônimo</span>
+                </label>
+            </div>
+
+            {/* Botões */}
             <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
                 <button type="submit" className="btn btn-success" disabled={loading}>
                     {loading ? "Salvando..." : "Salvar"}

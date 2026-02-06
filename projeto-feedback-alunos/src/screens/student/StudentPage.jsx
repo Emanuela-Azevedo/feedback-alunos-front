@@ -3,38 +3,45 @@ import logoIfpb from "../../assets/logo-ifpb.png";
 import ListAvaliacoes from "../../components/avaliacoes/ListAvaliacoes";
 import CreateAvaliacao from "../../components/avaliacoes/CreateAvaliacao";
 import EditAvaliacao from "../../components/avaliacoes/EditAvaliacao";
-import AvaliacaoDisciplinaAPI from "../../services/AvaliacaoDisciplina";
-import AvaliacaoProfessorAPI from "../../services/AvaliacaoProfessor";
+import AvaliacaoDisciplinaAPI from "../../services/AvaliaoesDisciplina";
+import AvaliacaoProfessorAPI from "../../services/AvaliacoesProfessor";
 
 export default function StudentPage({ userData, onLogout }) {
+    const userDataNormalizado = {
+        ...userData,
+        usuarioId: userData?.usuarioId ?? userData?.id,
+    };
+
     const [avaliacoes, setAvaliacoes] = useState([]);
     const [showCreate, setShowCreate] = useState(false);
-    const [editando, setEditando] = useState(null); // {id, tipo}
+    const [editando, setEditando] = useState(null);
 
-    // Carregar avaliações ao montar
-    useEffect(() => {
-        async function carregarAvaliacoes() {
-            try {
-                const [disciplinasResponse, professoresResponse] = await Promise.all([
-                    AvaliacaoDisciplinaAPI.listarAvaliacoes(),
-                    AvaliacaoProfessorAPI.listarAvaliacoes(),
-                ]);
+    // Função centralizada para carregar avaliações
+    async function carregarAvaliacoes() {
+        try {
+            const [disciplinasResponse, professoresResponse] = await Promise.all([
+                AvaliacaoDisciplinaAPI.listarAvaliacoes(),
+                AvaliacaoProfessorAPI.listarAvaliacoes(),
+            ]);
 
-                const disciplinas = disciplinasResponse.data.map((a) => ({
-                    ...a,
-                    tipoAvaliacao: "disciplina",
-                }));
+            const disciplinas = (disciplinasResponse.data || []).map((a) => ({
+                ...a,
+                tipoAvaliacao: "disciplina",
+            }));
 
-                const professores = professoresResponse.data.map((a) => ({
-                    ...a,
-                    tipoAvaliacao: "professor",
-                }));
+            const professores = (professoresResponse.data || []).map((a) => ({
+                ...a,
+                tipoAvaliacao: "professor",
+            }));
 
-                setAvaliacoes([...disciplinas, ...professores]);
-            } catch (error) {
-                console.error("Erro ao carregar avaliações:", error);
-            }
+            setAvaliacoes([...disciplinas, ...professores]);
+        } catch (error) {
+            console.error("Erro ao carregar avaliações:", error);
         }
+    }
+
+    // Carregar ao montar
+    useEffect(() => {
         carregarAvaliacoes();
     }, []);
 
@@ -46,23 +53,22 @@ export default function StudentPage({ userData, onLogout }) {
             } else {
                 await AvaliacaoProfessorAPI.excluirAvaliacao(avaliacao.id);
             }
-            setAvaliacoes(avaliacoes.filter((a) => a.id !== avaliacao.id));
+            // Recarregar lista do backend
+            await carregarAvaliacoes();
         } catch (error) {
             console.error("Erro ao excluir avaliação:", error);
         }
     }
 
     // Atualizar lista após edição
-    function handleUpdated(nova) {
-        setAvaliacoes(
-            avaliacoes.map((a) => (a.id === nova.id ? { ...nova, tipoAvaliacao: a.tipoAvaliacao } : a))
-        );
+    async function handleUpdated() {
+        await carregarAvaliacoes();
         setEditando(null);
     }
 
     // Atualizar lista após criação
-    function handleCreated(nova) {
-        setAvaliacoes([...avaliacoes, nova]);
+    async function handleCreated() {
+        await carregarAvaliacoes();
         setShowCreate(false);
     }
 
@@ -87,14 +93,14 @@ export default function StudentPage({ userData, onLogout }) {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <span style={{ fontWeight: 600 }}>Olá, {userData.nome}</span>
+                        <span style={{ fontWeight: 600 }}>Olá, {userDataNormalizado.nome}</span>
                         <button onClick={onLogout} className="btn btn-danger">
                             Sair
                         </button>
                     </div>
                 </div>
 
-                {/* Botão Criar Avaliação alinhado à esquerda */}
+                {/* Botão Criar Avaliação */}
                 <div style={{ marginBottom: "2rem", textAlign: "left" }}>
                     <button
                         className="btn btn-success"
@@ -107,7 +113,7 @@ export default function StudentPage({ userData, onLogout }) {
                 {/* Formulário de criação */}
                 {showCreate && (
                     <CreateAvaliacao
-                        userData={userData}
+                        userData={userDataNormalizado}
                         onCancel={() => setShowCreate(false)}
                         onCreated={handleCreated}
                     />

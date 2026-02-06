@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import jwtDecode from "jwt-decode";
 import AuthAPI from "../services/Authentication";
 
 const AuthContext = createContext(null);
@@ -16,43 +15,31 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        if (!token) {
+        const savedUser = localStorage.getItem("userData");
+
+        if (!token || !savedUser) {
             setLoading(false);
             return;
         }
 
         try {
-            const decoded = jwtDecode(token);
-            const role = decoded.roles?.[0] || decoded.authorities?.[0] || null;
+            const userData = JSON.parse(savedUser);
 
             let userType = null;
-            if (role === "ROLE_ALUNO") {
-                userType = "student";
-            } else if (role === "ROLE_PROFESSOR") {
-                userType = "teacher";
-            } else if (role === "ROLE_ADMIN") {
-                userType = "admin";
-            }
-
-            if (!userType) {
-                localStorage.removeItem("token");
-                setLoading(false);
-                return;
-            }
+            if (userData.role === "ROLE_ALUNO") userType = "student";
+            else if (userData.role === "ROLE_PROFESSOR") userType = "teacher";
+            else if (userData.role === "ROLE_ADMIN") userType = "admin";
 
             setAuthState({
                 token,
                 isLoggedIn: true,
                 userType,
-                userData: {
-                    matricula: decoded.sub,
-                    role,
-                    nome: decoded.nome || "", // se o token tiver nome
-                },
+                userData,
             });
         } catch (err) {
-            console.error("AuthContext: erro ao decodificar token", err);
+            console.error("AuthContext: erro ao restaurar userData", err);
             localStorage.removeItem("token");
+            localStorage.removeItem("userData");
         } finally {
             setLoading(false);
         }
@@ -61,42 +48,34 @@ export const AuthProvider = ({ children }) => {
     const login = async (matricula, password) => {
         try {
             const response = await AuthAPI.login({ matricula, password });
-            const token = response.data.token;
-            localStorage.setItem("token", token);
+            const data = response.data;
+            // data já tem: token, usuarioId, matricula, nome, role
 
-            const decoded = jwtDecode(token);
-            const role = decoded.roles?.[0] || decoded.authorities?.[0] || null;
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userData", JSON.stringify({
+                usuarioId: data.usuarioId,
+                matricula: data.matricula,
+                nome: data.nome,
+                role: data.role,
+            }));
 
             let userType = null;
-            if (role === "ROLE_ALUNO") {
-                userType = "student";
-            } else if (role === "ROLE_PROFESSOR") {
-                userType = "teacher";
-            } else if (role === "ROLE_ADMIN") {
-                userType = "admin";
-            }
-
-            if (!userType) {
-                localStorage.removeItem("token");
-                setAuthState({
-                    token: null,
-                    isLoggedIn: false,
-                    userType: null,
-                    userData: null,
-                });
-                return false;
-            }
+            if (data.role === "ROLE_ALUNO") userType = "student";
+            else if (data.role === "ROLE_PROFESSOR") userType = "teacher";
+            else if (data.role === "ROLE_ADMIN") userType = "admin";
 
             setAuthState({
-                token,
+                token: data.token,
                 isLoggedIn: true,
                 userType,
                 userData: {
-                    matricula: decoded.sub,
-                    role,
-                    nome: decoded.nome || "",
+                    usuarioId: data.usuarioId,
+                    matricula: data.matricula,
+                    nome: data.nome,
+                    role: data.role,
                 },
             });
+
             return true;
         } catch (err) {
             console.error("AuthContext: erro no login", err);
@@ -106,6 +85,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userData");
         setAuthState({
             token: null,
             isLoggedIn: false,

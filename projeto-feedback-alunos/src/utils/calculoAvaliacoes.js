@@ -7,9 +7,10 @@ export const calcularMedia = (avaliacoes) => {
 export const calcularMediaPorDisciplina = (avaliacoes) => {
   const disciplinas = {};
   avaliacoes.forEach(av => {
-    if (!disciplinas[av.disciplina]) disciplinas[av.disciplina] = { soma: 0, count: 0 };
-    disciplinas[av.disciplina].soma += av.nota;
-    disciplinas[av.disciplina].count += 1;
+    const nomeDisciplina = av.disciplinaNome || "Indefinida";
+    if (!disciplinas[nomeDisciplina]) disciplinas[nomeDisciplina] = { soma: 0, count: 0 };
+    disciplinas[nomeDisciplina].soma += av.nota;
+    disciplinas[nomeDisciplina].count += 1;
   });
   return Object.entries(disciplinas).map(([disciplina, data]) => ({
     disciplina,
