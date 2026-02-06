@@ -34,6 +34,9 @@ Sistema web para avaliação de professores e disciplinas desenvolvido em React 
 - **Vite 7.2.4** - Build tool e dev server
 - **CSS3** - Estilização com gradientes animados
 - **JavaScript ES6+** - Lógica da aplicação
+- **Axios** – Comunicação com a API
+- **Context API** – Gerenciamento de estado global e autenticação
+- **Node.js** e **npm**
 
 ## 📦 Instalação
 
@@ -56,21 +59,57 @@ npm run dev
 4. Acesse no navegador
 ```
 http://localhost:5173
+
 ```
+### ** ⚙️ Pré-requisitos ** 
 
-## 👥 Usuários de Teste
+Antes de executar o projeto, é necessário ter instalado:
 
-### Aluno
-- **Matrícula:** 202315020035
-- **Senha:** Aluno123!
+- Node.js (versão 18 ou superior)
+- npm
+- Backend em **Spring Boot** rodando em:
+http://localhost:8081
 
-### Professor
-- **Matrícula:** 202015030025
-- **Senha:** Prof123!
+⚠️ **O frontend depende do backend para funcionar corretamente.** 
+``` 
+```
+### **🔐 Autenticação e Token JWT **
 
-### Administrador
-- **Matrícula:** 999999999999
-- **Senha:** Admin123!
+O sistema utiliza JWT (JSON Web Token) para autenticação.
+
+## Fluxo de autenticação: 
+
+- O usuário realiza login
+
+- O backend retorna um token JWT
+
+- O token é armazenado no AuthContext
+
+- O token é enviado automaticamente nas requisições autenticadas
+```
+```
+## 🧩 Services e Comunicação com a API
+
+A comunicação com o backend é centralizada na pasta services, utilizando Axios.
+
+Cada service é responsável por uma entidade do sistema, como:
+
+- Cursos
+
+- AvaliacoesProfessor
+
+- Usuarios
+
+- Disciplinas
+
+### ** Esses services: ** 
+
+- adicionam automaticamente o token JWT no header
+
+- encapsulam chamadas HTTP (GET, POST, PUT, DELETE)
+
+- facilitam a reutilização e manutenção do código
+
 
 ## 🎨 Design
 
@@ -121,7 +160,14 @@ src/
 │   │   └── StudentPage.jsx
 │   ├── teacher/         # Páginas do professor
 │   │   └── TeacherPage.jsx
-│   └── index.js         # Exportações das páginas
+│   └── index.js # Exportações das páginas
+├── services/
+│   ├── Authentication.js # Autenticação e token JWT
+│   ├── Usuarios.js       # Serviços de usuários
+│   ├── Cursos.js         # Serviços de cursos
+│   ├── Disciplinas.js    # Serviços de disciplinas
+│   ├── AvaliacoesProfessor.js   # Avaliação de professores
+│   └── AvaliacoesDisciplina.js   # Avaliação de disciplinas 
 ├── styles/              # Arquivos de estilo
 │   └── App.css          # Estilos principais
 ├── utils/               # Funções utilitárias
@@ -172,4 +218,4 @@ src/
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido para fins educacionais no IFPB.
+Projeto desenvolvido para fins educacionais no Instituto Federal da Paraíba (IFPB).
