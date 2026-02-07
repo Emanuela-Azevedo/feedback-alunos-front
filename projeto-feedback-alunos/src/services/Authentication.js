@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8081", // ajuste pro seu backend
+    baseURL: "http://localhost:8081",
 });
 
 // função de login
